@@ -1,4 +1,4 @@
-import { IPaginationResponse } from './interface/pagination-response.interface';
+import { IPaginationResponse } from './pagination-response.interface';
 
 export class AppPagination<PaginationModel> {
   public statusCode: number;

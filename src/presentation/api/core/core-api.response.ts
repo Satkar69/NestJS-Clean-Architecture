@@ -1,7 +1,7 @@
-import { IPaginationOptions } from 'src/shared/response/interface/pagination-options.interface';
-import { AppPagination } from 'src/shared/response/app-pagination';
-import { AppResponse } from 'src/shared/response/app-response';
-import { IPaginationData } from 'src/shared/response/interface/pagination-data.interface';
+import { IPaginationOptions } from 'src/shared/interface/response/pagination-options.interface';
+import { AppPagination } from 'src/shared/interface/response/app-pagination';
+import { AppResponse } from 'src/shared/interface/response/app-response';
+import { IPaginationData } from 'src/shared/interface/response/pagination-data.interface';
 
 export class CoreApiResponse {
   static success<TData>(

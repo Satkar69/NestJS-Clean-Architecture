@@ -1,4 +1,4 @@
-import { IResponseResult } from './interface/response-result.interface';
+import { IResponseResult } from './response-result.interface';
 
 export class AppResponse<ResponseModel> {
   public statusCode: number;
