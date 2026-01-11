@@ -1,4 +1,5 @@
-import { HttpException, Logger } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
+import { DatabaseConnectionException } from 'src/shared/exceptions';
 import { createPgDataSource } from '../pg-data-source';
 import InjectableString from 'src/shared/constants/injectable-string';
 import { ConfigService } from '@nestjs/config';
@@ -21,7 +22,7 @@ export const pgDatabaseProvider = [
           'PgDatabaseProvider',
           error,
         );
-        throw new HttpException(
+        throw new DatabaseConnectionException(
           error.message || 'Failed to initialize database connection',
           error.status || 500,
         );
