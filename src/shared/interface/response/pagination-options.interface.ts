@@ -1,8 +1,6 @@
-export interface IPaginationOptions<
-  TFilters = string | number | boolean | any[],
-> {
+export interface IPaginationOptions {
   page?: number;
   limit?: number;
-  filters?: Partial<TFilters>;
+  filters?: Record<string, string | number | boolean | any[]>;
   searchString?: string;
 }

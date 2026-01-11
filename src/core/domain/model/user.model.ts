@@ -2,7 +2,7 @@ import { UserRoleEnum } from '../enums/user.enum';
 
 export class UserModel {
   firstName: string;
-  middleName: string;
+  middleName?: string;
   lastName: string;
   email: string;
   contact: string;

@@ -36,6 +36,14 @@ export abstract class IGenericRepository<T> {
     manager?: unknown,
   ): Promise<T>;
 
+  abstract getOneOrNull(
+    condition: keyValueObj | any[],
+    relations?: RelationType,
+    select?: keyValueObj,
+    methodOptions?: OtherMethodOptions,
+    manager?: unknown,
+  ): Promise<T | null>;
+
   abstract create(item: T, manager?: unknown): Promise<T>;
 
   abstract update(
@@ -58,6 +66,14 @@ export abstract class IGenericRepository<T> {
     relations?: RelationType,
     manager?: unknown,
   ): Promise<T>;
+
+  abstract createBulk(items: T[], manager?: unknown): Promise<T[]>;
+
+  abstract updateBulk(
+    condition: keyValueObj | any[],
+    item: keyValueObj,
+    manager?: unknown,
+  ): Promise<T[]>;
 
   abstract softDelete(
     condition: keyValueObj | any[],
