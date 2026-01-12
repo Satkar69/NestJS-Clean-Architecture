@@ -1,8 +1,6 @@
 import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import InjectableString from 'src/shared/constants/injectable-string';
-import { IGenericRepository } from 'src/core/abstracts/generic-repository.abstract';
 import { IDataServices } from 'src/core/domain/abstracts/data-services/data-services.abstract';
-import { UserModel } from 'src/core/domain/model/user.model';
 import { UserEntity } from './entities/user.entity';
 import { PgGenericRepository } from './pg-generic-repository';
 import { DataSource, EntityManager, Repository } from 'typeorm';
@@ -12,7 +10,7 @@ import { TransactionException } from 'src/shared/exceptions';
 
 @Injectable()
 export class PgDataService implements IDataServices, OnApplicationBootstrap {
-  user: PgGenericRepository<UserModel>;
+  user: PgGenericRepository<UserEntity>;
 
   constructor(
     private readonly cls: IClsStore<AppClsStore>,
@@ -41,7 +39,9 @@ export class PgDataService implements IDataServices, OnApplicationBootstrap {
       return result;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw new TransactionException('operation', error.message, {
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
+      throw new TransactionException('database transaction', errorMessage, {
         originalError: error,
       });
     } finally {
