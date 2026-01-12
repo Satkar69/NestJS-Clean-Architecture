@@ -9,7 +9,7 @@ export type OtherMethodOptions = {
   withDeleted?: boolean;
 };
 
-export abstract class IGenericRepositoryPort<T> {
+export abstract class IGenericRepository<T> {
   abstract getAll(
     condition?: keyValueObj | any[],
     relations?: RelationType,
