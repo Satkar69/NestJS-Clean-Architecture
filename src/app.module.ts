@@ -5,6 +5,7 @@ import { ClsStoreModule } from './infrastructure/services/cls-store/cls-store.mo
 import { JwtTokenModule } from './infrastructure/services/jwt-token/jwt-token.module';
 import { APP_GUARD, RouterModule } from '@nestjs/core';
 import routes from './presentation/controllers/routes';
+import { ControllerModule } from './presentation/controllers/controller.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { HttpLoggingInterceptor } from './presentation/interceptors/http-logging.interceptor';
 import { ResponseInterceptor } from './presentation/interceptors/response.interceptor';
@@ -18,6 +19,7 @@ import { AuthGuard } from './presentation/guards/auth.guard';
     ClsStoreModule,
     DataServicesModule,
     RouterModule.register(routes),
+    ControllerModule,
   ],
   providers: [
     {
