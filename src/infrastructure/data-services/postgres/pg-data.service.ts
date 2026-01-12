@@ -8,6 +8,7 @@ import { PgGenericRepository } from './pg-generic-repository';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { IClsStore } from 'src/core/abstracts/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
+import { TransactionException } from 'src/shared/exceptions';
 
 @Injectable()
 export class PgDataService implements IDataServices, OnApplicationBootstrap {
@@ -40,7 +41,9 @@ export class PgDataService implements IDataServices, OnApplicationBootstrap {
       return result;
     } catch (error) {
       await queryRunner.rollbackTransaction();
-      throw error;
+      throw new TransactionException('operation', error.message, {
+        originalError: error,
+      });
     } finally {
       await queryRunner.release();
     }
