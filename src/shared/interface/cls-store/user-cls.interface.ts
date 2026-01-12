@@ -6,6 +6,5 @@ export interface UserClsStore {
   middleName?: string;
   lastName: string;
   email: string;
-  contact: string;
   userRole: UserRoleEnum;
 }
