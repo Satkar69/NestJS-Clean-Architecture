@@ -16,9 +16,6 @@ export class UserEntity extends BaseEntity {
   @Column({ name: 'email', length: 150, unique: true })
   email: string;
 
-  @Column({ name: 'contact', length: 15, unique: true })
-  contact: string;
-
   @Column({ name: 'password', length: 255 })
   password: string;
 
@@ -26,10 +23,9 @@ export class UserEntity extends BaseEntity {
     name: 'user_role',
     type: 'enum',
     enum: UserRoleEnum,
-    default: UserRoleEnum.USER,
   })
   userRole: UserRoleEnum;
 
-  @Column({ name: 'is_active', default: true })
+  @Column({ name: 'is_active' })
   isActive: boolean;
 }

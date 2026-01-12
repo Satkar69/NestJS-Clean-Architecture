@@ -5,4 +5,5 @@ import { IPaginationOptions } from '../response/pagination-options.interface';
 export interface AppClsStore extends ClsStore {
   user?: UserClsStore;
   paginationOptions?: IPaginationOptions;
+  isPublic?: boolean;
 }

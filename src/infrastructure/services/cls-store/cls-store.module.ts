@@ -8,10 +8,9 @@ import { ClsStoreService } from './cls-store.service';
   imports: [
     ClsModule.forRoot({
       global: true,
-      guard: {
+      middleware: {
         mount: true,
-        setup: (cls, context) => {
-          const request = context.switchToHttp().getRequest();
+        setup: (cls, request) => {
           cls.set('paginationOptions', request.query as IPaginationOptions);
         },
       },
