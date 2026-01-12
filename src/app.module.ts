@@ -5,6 +5,10 @@ import { DataServicesModule } from './infrastructure/data-services/data-services
 import { ConfigModule } from '@nestjs/config';
 import { ClsStoreModule } from './infrastructure/services/cls-store/cls-store.module';
 import { JwtTokenModule } from './infrastructure/services/jwt-token/jwt-token.module';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { HttpLoggingInterceptor } from './presentation/interceptors/http-logging.interceptor';
+import { ResponseInterceptor } from './presentation/interceptors/response.interceptor';
+import { HttpExceptionFilter } from './presentation/filters';
 
 @Module({
   imports: [
@@ -13,7 +17,19 @@ import { JwtTokenModule } from './infrastructure/services/jwt-token/jwt-token.mo
     ClsStoreModule,
     DataServicesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: HttpLoggingInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ResponseInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
