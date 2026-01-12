@@ -12,7 +12,7 @@ import { TransactionException } from 'src/shared/exceptions';
 
 @Injectable()
 export class PgDataService implements IDataServices, OnApplicationBootstrap {
-  user: PgGenericRepository<UserEntity>;
+  user: PgGenericRepository<UserModel>;
 
   constructor(
     private readonly cls: IClsStore<AppClsStore>,
