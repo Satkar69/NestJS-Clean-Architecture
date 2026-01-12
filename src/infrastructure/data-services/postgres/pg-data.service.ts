@@ -7,10 +7,12 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { IClsStore } from 'src/core/abstracts/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
 import { TransactionException } from 'src/shared/exceptions';
+import { IGenericRepository } from 'src/core/abstracts/generic-repository.abstract';
+import { UserModel } from 'src/core/domain/model/user.model';
 
 @Injectable()
 export class PgDataService implements IDataServices, OnApplicationBootstrap {
-  user: PgGenericRepository<UserEntity>;
+  user: IGenericRepository<UserModel>;
 
   constructor(
     private readonly cls: IClsStore<AppClsStore>,
