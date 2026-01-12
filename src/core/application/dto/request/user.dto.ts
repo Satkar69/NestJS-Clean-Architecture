@@ -81,14 +81,6 @@ export class LoginUserDto {
   email?: string;
 
   @ApiProperty({
-    example: '+1234567890',
-    description: 'Contact number of the user',
-  })
-  @IsOptional()
-  @IsString()
-  contact?: string;
-
-  @ApiProperty({
     example: 'StrongPassword123!',
     description: 'Password for the user account',
   })

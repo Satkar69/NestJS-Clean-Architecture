@@ -14,7 +14,7 @@ export class UserController {
     return CoreApiResponse.success(
       await this.userService.registerUser(dto),
       201,
-      'user_registered_successfully',
+      'user registered successfully',
     );
   }
 }

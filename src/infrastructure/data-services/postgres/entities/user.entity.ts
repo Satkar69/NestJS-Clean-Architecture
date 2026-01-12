@@ -16,9 +16,6 @@ export class UserEntity extends BaseEntity {
   @Column({ name: 'email', length: 150, unique: true })
   email: string;
 
-  @Column({ name: 'contact', length: 15, unique: true })
-  contact: string;
-
   @Column({ name: 'password', length: 255 })
   password: string;
 
