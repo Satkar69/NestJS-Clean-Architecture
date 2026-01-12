@@ -4,10 +4,12 @@ import { AppService } from './core/application/use-cases/app.service';
 import { DataServicesModule } from './infrastructure/data-services/data-services.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClsStoreModule } from './infrastructure/services/cls-store/cls-store.module';
+import { JwtTokenModule } from './infrastructure/services/jwt-token/jwt-token.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
+    JwtTokenModule,
     ClsStoreModule,
     DataServicesModule,
   ],

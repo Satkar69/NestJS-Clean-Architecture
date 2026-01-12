@@ -7,7 +7,7 @@ export interface IJwtPayload {
   exp: number;
 }
 
-export interface IReshreshTokanPayload {
+export interface IRefreshTokenPayload {
   sub: string;
 }
 
@@ -19,7 +19,7 @@ export interface IResetPasswordTokenPayload {
 export abstract class IJwtService {
   abstract checkToken<T>(token: string): Promise<T>;
   abstract createAccessToken(payload: IJwtPayload): Promise<string>;
-  abstract createRefreshToken(payload: IReshreshTokanPayload): Promise<string>;
+  abstract createRefreshToken(payload: IRefreshTokenPayload): Promise<string>;
   abstract createResetPasswordToken(
     payload: IResetPasswordTokenPayload,
   ): Promise<string>;
