@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { pgDatabaseProvider } from './providers/pgDatabase.provider';
 import { ClsStoreModule } from 'src/infrastructure/services/cls-store/cls-store.module';
 import providers from './providers';
-import { IDataServices } from 'src/core/domain/abstracts/data-services/data-services.abstract';
+import { IDataServices } from 'src/core/domain/abstracts/data-services.abstract';
 import { PgDataService } from './pg-data.service';
 
 @Module({
