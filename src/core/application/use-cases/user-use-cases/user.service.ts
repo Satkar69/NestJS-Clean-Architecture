@@ -14,8 +14,11 @@ export class UserService implements IUserService {
   ) {}
 
   async registerUser(dto: RegisterUserDto) {
-    const user = this.userFactory.registerUser(dto);
-    user.password = await this.bcryptService.hash(user.password);
+    const hashedPassword = await this.bcryptService.hash(dto.password);
+    const user = this.userFactory.registerUser({
+      ...dto,
+      password: hashedPassword,
+    });
     return this.dataServices.user.create(user);
   }
 }

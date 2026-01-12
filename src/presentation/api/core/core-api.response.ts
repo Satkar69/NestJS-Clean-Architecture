@@ -5,9 +5,9 @@ import { IPaginationData } from 'src/shared/interface/response/pagination-data.i
 
 export class CoreApiResponse {
   static success<TData>(
+    data: TData,
     statusCode: number = 200,
     message: string = 'success',
-    data: TData,
   ) {
     return new AppResponse({
       statusCode,
