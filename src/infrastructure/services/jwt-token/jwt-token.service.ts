@@ -6,7 +6,7 @@ import {
   IJwtService,
   IRefreshTokenPayload,
   IResetPasswordTokenPayload,
-} from 'src/core/abstracts/jwt.abstract';
+} from 'src/core/application/ports/out/jwt.abstract';
 
 @Injectable()
 export class JwtTokenService implements IJwtService {

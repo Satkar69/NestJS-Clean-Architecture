@@ -1,4 +1,4 @@
-import { IGenericRepository } from '../../abstracts/generic-repository.port';
+import { IGenericRepository } from '../../application/ports/out/generic-repository.abstract';
 import { UserModel } from '../model/user.model';
 
 export abstract class IDataServices {

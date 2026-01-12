@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { IJwtService } from 'src/core/abstracts/jwt.abstract';
+import { IJwtService } from 'src/core/application/ports/out/jwt.abstract';
 import { JwtTokenService } from './jwt-token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';

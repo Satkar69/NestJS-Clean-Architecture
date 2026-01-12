@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClsModule } from 'nestjs-cls';
-import { IClsStore } from 'src/core/abstracts/cls-store.abstract';
+import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
 import { IPaginationOptions } from 'src/shared/interface/response/pagination-options.interface';
 import { ClsStoreService } from './cls-store.service';
 
