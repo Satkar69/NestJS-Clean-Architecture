@@ -4,10 +4,10 @@ import { IDataServices } from 'src/core/domain/abstracts/data-services.abstract'
 import { UserEntity } from './entities/user.entity';
 import { PgGenericRepository } from './pg-generic-repository';
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { IClsStore } from 'src/core/abstracts/cls-store.abstract';
+import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
 import { TransactionException } from 'src/shared/exceptions';
-import { IGenericRepository } from 'src/core/abstracts/generic-repository.port';
+import { IGenericRepository } from 'src/core/application/ports/out/generic-repository.abstract';
 import { UserModel } from 'src/core/domain/model/user.model';
 
 @Injectable()
