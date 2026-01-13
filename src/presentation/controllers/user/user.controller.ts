@@ -22,11 +22,24 @@ export class UserController {
 
   @ApiOperation({ summary: 'Login a user' })
   @Post('/login')
-  async loginUser(@Body() dto: LoginUserDto, @Res() response: any) {
+  async loginUser(
+    @Body() dto: LoginUserDto,
+    @Res({ passthrough: true }) res: any,
+  ) {
     return CoreApiResponse.success(
-      await this.userService.loginUser(dto, response),
+      await this.userService.loginUser(dto, res),
       200,
       'user logged in successfully',
+    );
+  }
+
+  @ApiOperation({ summary: 'Logout a user' })
+  @Post('/logout')
+  async logoutUser(@Res({ passthrough: true }) res: any) {
+    return CoreApiResponse.success(
+      await this.userService.logoutUser(res),
+      200,
+      'user logged out successfully',
     );
   }
 }

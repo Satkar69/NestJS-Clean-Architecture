@@ -45,7 +45,7 @@ export class UserService implements IUserService {
     plainPassword: string,
     hashedPassword: string,
   ): Promise<boolean> {
-    return this.bcryptService.compare(plainPassword, hashedPassword);
+    return await this.bcryptService.compare(plainPassword, hashedPassword);
   }
 
   async registerUser(dto: RegisterUserDto) {
@@ -61,34 +61,37 @@ export class UserService implements IUserService {
     return this.dataServices.user.create(user);
   }
 
-  async loginUser(dto: LoginUserDto, response: Response) {
+  async loginUser(dto: LoginUserDto, res: Response) {
     const existingUser = await this.checkExistingUserByEmail(dto.email);
-    if (!existingUser.exists) {
+
+    if (!existingUser.exists || !existingUser.user) {
       throw new InvalidCredentialsException(
         `user with email "${dto.email}" does not exists.`,
       );
     }
     const isPasswordValid = await this.checkPasswordMatch(
       dto.password,
-      existingUser.user?.password ?? '',
+      existingUser.user.password,
     );
+
     if (!isPasswordValid) {
       throw new InvalidCredentialsException('Invalid Password Provided');
     }
     const tokenPayload = {
-      sub: existingUser.user?.id ?? '',
-      role: existingUser.user?.userRole as UserRoleEnum,
+      sub: existingUser.user.id,
+      role: existingUser.user.userRole,
     };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.createAccessToken(tokenPayload),
       this.jwtService.createRefreshToken(tokenPayload),
     ]);
-    response.cookie('access_token', accessToken, {
+
+    res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
     });
-    response.cookie('refresh_token', refreshToken, {
+    res.cookie('refresh_token', refreshToken, {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
@@ -97,5 +100,19 @@ export class UserService implements IUserService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async logoutUser(res: Response) {
+    res.clearCookie('accessToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+    return;
   }
 }
