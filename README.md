@@ -16,7 +16,7 @@ Based on Uncle Bob's Clean Architecture, our codebase is organized in concentric
 │      🎨 Interface Adapters (Green)          │
 │     Presentation Layer                       │
 ├─────────────────────────────────────────────┤
-│      💼 Application Business Rules (Pink)   │
+│      💼 Application Business Rules (Orange)   │
 │     Application Layer                        │
 ├─────────────────────────────────────────────┤
 │      🎯 Enterprise Business Rules (Yellow)  │
@@ -34,7 +34,7 @@ src/
 │   │   ├── value-objects/         # Immutable value objects
 │   │   └── events/                # Domain events
 │   │
-│   └── application/               # 💼 USE CASES (Pink Circle)
+│   └── application/               # 💼 USE CASES (Orange Circle)
 │       ├── use-cases/             # Application business logic
 │       ├── dto/                   # Data Transfer Objects
 │       └── ports/                 # Interfaces/Contracts
@@ -152,7 +152,7 @@ export class User {
 
 ---
 
-### 💼 Layer 2: Core/Application (Use Cases - Pink Circle)
+### 💼 Layer 2: Core/Application (Use Cases - Orange Circle)
 
 **Depends only on Domain layer**
 

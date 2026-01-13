@@ -14,7 +14,6 @@ export class ProtectGuard implements CanActivate {
 
   async canActivate(): Promise<boolean> {
     const isPublic = this.cls.get<boolean>('isPublic');
-    console.log('Authorizing protected route...');
     if (isPublic) {
       return true;
     }
