@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import InjectableString from 'src/shared/constants/injectable-string';
-import { IDataServices } from 'src/core/domain/abstracts/data-services.abstract';
+import { IDataServices } from 'src/core/application/ports/out/data-services.abstract';
 import { UserEntity } from './entities/user.entity';
 import { PgGenericRepository } from './pg-generic-repository';
 import { DataSource, EntityManager, Repository } from 'typeorm';

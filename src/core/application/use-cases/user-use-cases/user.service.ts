@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IDataServices } from 'src/core/domain/abstracts/data-services.abstract';
+import { IDataServices } from 'src/core/application/ports/out/data-services.abstract';
 import { IBcryptService } from '../../ports/out/bcrypt.abstract';
 import { UserFactoryUseCaseService } from './user-factory.service';
 import { RegisterUserDto } from '../../dto/request/user.dto';
