@@ -28,7 +28,6 @@ export class ProtectGuard implements CanActivate {
 
   private async authorizeUser(): Promise<void> {
     const payload = this.cls.get<IJwtPayload>('tokenPayload');
-    console.log('Payload in ProtectGuard:', payload);
     if (!payload) {
       throw new UnauthorizedException();
     }
