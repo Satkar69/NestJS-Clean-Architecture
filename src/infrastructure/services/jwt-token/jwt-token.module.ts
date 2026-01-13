@@ -2,10 +2,18 @@ import { Module } from '@nestjs/common';
 import { IJwtService } from 'src/core/application/ports/out/jwt.abstract';
 import { JwtTokenService } from './jwt-token.service';
 import { JwtModule } from '@nestjs/jwt';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [JwtModule.register({})],
+  imports: [
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_SECRET') || '',
+      }),
+      inject: [ConfigService],
+    }),
+  ],
   providers: [
     ConfigService,
     {

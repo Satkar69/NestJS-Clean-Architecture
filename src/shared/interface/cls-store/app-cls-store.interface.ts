@@ -7,5 +7,6 @@ export interface AppClsStore extends ClsStore {
   user?: UserClsStore;
   paginationOptions?: IPaginationOptions;
   isPublic?: boolean;
+  isProtected?: boolean;
   tokenPayload?: IJwtPayload;
 }

@@ -6,6 +6,7 @@ import { IJwtService } from 'src/core/application/ports/out/jwt.abstract';
 import { IS_PUBLIC_KEY } from 'src/shared/decorators/public.decorator';
 import { Request, Response } from 'express';
 import { SessionExpiredException } from 'src/shared/exceptions';
+import { IS_PROTECTED_KEY } from 'src/shared/decorators/protected.decorator';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -22,6 +23,9 @@ export class AuthGuard implements CanActivate {
 
     const isPublic = this.isPublicRoute(context, requestUrl);
     this.cls.set('isPublic', isPublic);
+
+    const isProtected = this.isProtectedRoute(context, requestUrl);
+    this.cls.set('isProtected', isProtected);
 
     if (isPublic) {
       return true;
@@ -42,6 +46,15 @@ export class AuthGuard implements CanActivate {
       : false;
   }
 
+  private isProtectedRoute(context: ExecutionContext, url: string): boolean {
+    return (
+      this.reflector.getAllAndOverride<boolean>(IS_PROTECTED_KEY, [
+        context.getHandler(),
+        context.getClass(),
+      ]) || url.startsWith('/api/v1')
+    );
+  }
+
   private async authenticateUser(
     request: Request,
     response: Response,
@@ -56,7 +69,6 @@ export class AuthGuard implements CanActivate {
 
     try {
       const payload = await this.verifyToken(accessToken);
-
       if (payload) {
         this.cls.set('tokenPayload', payload);
         return;
@@ -99,7 +111,7 @@ export class AuthGuard implements CanActivate {
         role: refreshPayload.role,
       });
 
-      response.cookie('accessToken', newAccessToken, {
+      response.cookie('access_token', newAccessToken, {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
@@ -108,7 +120,7 @@ export class AuthGuard implements CanActivate {
       const newPayload = await this.verifyToken(newAccessToken);
       this.cls.set('tokenPayload', newPayload);
     } catch (error) {
-      throw new SessionExpiredException();
+      return;
     }
   }
 
@@ -117,16 +129,19 @@ export class AuthGuard implements CanActivate {
       const decoded = await this.jwtService.checkToken(token.trim());
       return decoded;
     } catch (error) {
+      console.log('Token verification failed:', error);
       return null;
     }
   }
 
   private extractAccessToken(request: Request): string | undefined {
-    return request.cookies?.accessToken || this.extractTokenFromHeader(request);
+    return (
+      request.cookies?.access_token || this.extractTokenFromHeader(request)
+    );
   }
 
   private extractRefreshToken(request: Request): string | undefined {
-    return request.cookies?.refreshToken;
+    return request.cookies?.refresh_token;
   }
 
   private extractTokenFromHeader(request: Request): string | undefined {

@@ -319,29 +319,45 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode,
     };
 
+    // Build detailed error message
+    const errorName =
+      exception instanceof Error ? exception.name : 'UnknownError';
+    const errorMessage =
+      exception instanceof Error ? exception.message : String(exception);
+
     // Log based on severity
     if (statusCode >= 500) {
       // Server errors - log as error with full details
       this.logger.error(
-        `${method} ${url} - ${statusCode}`,
-        exception instanceof Error
-          ? exception.stack
-          : JSON.stringify(exception),
-        JSON.stringify(logContext),
+        `[${errorName}] ${method} ${url} - ${statusCode}\nMessage: ${errorMessage}\nContext: ${JSON.stringify(logContext, null, 2)}`,
+        exception instanceof Error ? exception.stack : undefined,
       );
     } else if (statusCode >= 400) {
-      // Client errors - log as warning
+      // Client errors - log as warning with stack trace
       this.logger.warn(
-        `${method} ${url} - ${statusCode} - ${exception instanceof Error ? exception.message : 'Unknown error'}`,
-        JSON.stringify(logContext),
+        `[${errorName}] ${method} ${url} - ${statusCode}\nMessage: ${errorMessage}\nContext: ${JSON.stringify(logContext, null, 2)}`,
       );
+
+      // Log stack trace for client errors in development
+      if (this.isDevelopment && exception instanceof Error && exception.stack) {
+        this.logger.warn(`Stack Trace:\n${exception.stack}`);
+      }
     }
 
     // Always log BaseException context in development
     if (this.isDevelopment && exception instanceof BaseException) {
-      this.logger.debug(
-        `Exception Context: ${JSON.stringify(exception.context)}`,
-      );
+      if (exception.context) {
+        this.logger.debug(
+          `Exception Context: ${JSON.stringify(exception.context, null, 2)}`,
+        );
+      }
+
+      // Log validation errors if present
+      if (exception instanceof ValidationException && exception.errors) {
+        this.logger.debug(
+          `Validation Errors: ${JSON.stringify(exception.errors, null, 2)}`,
+        );
+      }
     }
   }
 }

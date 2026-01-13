@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import {
   LoginUserDto,
@@ -6,9 +6,15 @@ import {
 } from 'src/core/application/dto/request/user.dto';
 import { UserService } from 'src/core/application/use-cases/user-use-cases/user.service';
 import { CoreApiResponse } from 'src/presentation/api/core/core-api.response';
+import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
+import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
+import { UserClsStore } from 'src/shared/interface/cls-store/user-cls.interface';
 @Controller()
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(
+    private cls: IClsStore<AppClsStore>,
+    private userService: UserService,
+  ) {}
 
   @ApiOperation({ summary: 'Register a new user' })
   @Post('/register')
@@ -31,6 +37,12 @@ export class UserController {
       200,
       'user logged in successfully',
     );
+  }
+
+  @ApiOperation({ summary: 'Get current logged in user' })
+  @Get('/me')
+  async me() {
+    return CoreApiResponse.success(this.cls.get<UserClsStore>('user'));
   }
 
   @ApiOperation({ summary: 'Logout a user' })

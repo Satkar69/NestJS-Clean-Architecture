@@ -81,6 +81,7 @@ export class UserService implements IUserService {
       sub: existingUser.user.id,
       role: existingUser.user.userRole,
     };
+    console.log('Token Payload:', tokenPayload);
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.createAccessToken(tokenPayload),
       this.jwtService.createRefreshToken(tokenPayload),
@@ -103,12 +104,12 @@ export class UserService implements IUserService {
   }
 
   async logoutUser(res: Response) {
-    res.clearCookie('accessToken', {
+    res.clearCookie('access_token', {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
     });
-    res.clearCookie('refreshToken', {
+    res.clearCookie('refresh_token', {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
