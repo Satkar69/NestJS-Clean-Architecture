@@ -14,6 +14,7 @@ export class RegisterUserDto {
   @ApiProperty({
     example: 'John',
     description: 'First name of the user',
+    required: true,
   })
   @IsNotEmpty()
   @IsString()
@@ -31,6 +32,7 @@ export class RegisterUserDto {
   @ApiProperty({
     example: 'Doe',
     description: 'Last name of the user',
+    required: true,
   })
   @IsNotEmpty()
   @IsString()
@@ -39,6 +41,7 @@ export class RegisterUserDto {
   @ApiProperty({
     example: 'john@gmail.com',
     description: 'Email address of the user',
+    required: true,
   })
   @IsNotEmpty()
   @IsString()
@@ -47,8 +50,9 @@ export class RegisterUserDto {
   @ApiProperty({
     example: 'StrongPassword123!',
     description: 'Password for the user account',
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   password: string;
 
@@ -56,6 +60,7 @@ export class RegisterUserDto {
     example: 'USER',
     enum: ['USER', 'ADMIN'],
     description: 'Role of the user',
+    required: false,
   })
   @IsOptional()
   @IsEnum(UserRoleEnum)
@@ -64,6 +69,7 @@ export class RegisterUserDto {
   @ApiProperty({
     example: true,
     description: 'Indicates if the user is active',
+    required: false,
   })
   @IsOptional()
   @Type(() => Boolean)
@@ -75,16 +81,18 @@ export class LoginUserDto {
   @ApiProperty({
     example: 'john@gmail.com',
     description: 'Email address of the user',
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
-  email?: string;
+  email: string;
 
   @ApiProperty({
     example: 'StrongPassword123!',
     description: 'Password for the user account',
+    required: true,
   })
-  @IsOptional()
+  @IsNotEmpty()
   @IsString()
   password: string;
 }

@@ -22,7 +22,9 @@ export class AuthGuard implements CanActivate {
       this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
         context.getHandler(),
         context.getClass(),
-      ]) || requestUrl.startsWith('/api/v1/user/register')
+      ]) ||
+      requestUrl.startsWith('/api/v1/user/register') ||
+      requestUrl.startsWith('/api/v1/user/login')
         ? true
         : false;
     if (isPublic) {

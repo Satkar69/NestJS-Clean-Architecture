@@ -4,7 +4,6 @@ import { JwtService } from '@nestjs/jwt';
 import {
   IJwtPayload,
   IJwtService,
-  IRefreshTokenPayload,
   IResetPasswordTokenPayload,
 } from 'src/core/application/ports/out/jwt.abstract';
 
@@ -45,7 +44,7 @@ export class JwtTokenService implements IJwtService {
     });
   }
 
-  async createRefreshToken(payload: IRefreshTokenPayload): Promise<string> {
+  async createRefreshToken(payload: IJwtPayload): Promise<string> {
     return this.jwtService.signAsync(payload, {
       secret: this._refreshTokenSecret,
       expiresIn: this._refreshTokenExpiresIn,

@@ -1,9 +1,11 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, Res } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
-import { RegisterUserDto } from 'src/core/application/dto/request/user.dto';
+import {
+  LoginUserDto,
+  RegisterUserDto,
+} from 'src/core/application/dto/request/user.dto';
 import { UserService } from 'src/core/application/use-cases/user-use-cases/user.service';
 import { CoreApiResponse } from 'src/presentation/api/core/core-api.response';
-
 @Controller()
 export class UserController {
   constructor(private userService: UserService) {}
@@ -15,6 +17,16 @@ export class UserController {
       await this.userService.registerUser(dto),
       201,
       'user registered successfully',
+    );
+  }
+
+  @ApiOperation({ summary: 'Login a user' })
+  @Post('/login')
+  async loginUser(@Body() dto: LoginUserDto, @Res() response: any) {
+    return CoreApiResponse.success(
+      await this.userService.loginUser(dto, response),
+      200,
+      'user logged in successfully',
     );
   }
 }
