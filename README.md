@@ -1038,21 +1038,6 @@ export class UserController {
 - [NestJS Documentation](https://docs.nestjs.com/)
 - [SOLID Principles](https://en.wikipedia.org/wiki/SOLID)
 
-## 🤝 Contributing
-
-When contributing to this project:
-
-1. Follow the layer structure strictly
-2. Respect the Dependency Rule
-3. Write tests for each layer
-4. Document your code
-5. Use meaningful names
-6. Keep functions small and focused
-
-## 📝 License
-
-[Your License Here]
-
 ---
 
 **Remember**: The goal is to create software that is independent of frameworks, testable, independent of UI, independent of databases, and independent of any external agency. Keep business logic pure and dependencies pointing inward!
