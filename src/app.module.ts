@@ -11,6 +11,7 @@ import { HttpLoggingInterceptor } from './presentation/interceptors/http-logging
 import { ResponseInterceptor } from './presentation/interceptors/response.interceptor';
 import { HttpExceptionFilter } from './presentation/filters';
 import { AuthGuard } from './presentation/guards/auth.guard';
+import { ProtectGuard } from './presentation/guards/protect.guard';
 
 @Module({
   imports: [
@@ -25,6 +26,10 @@ import { AuthGuard } from './presentation/guards/auth.guard';
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ProtectGuard,
     },
     {
       provide: APP_INTERCEPTOR,

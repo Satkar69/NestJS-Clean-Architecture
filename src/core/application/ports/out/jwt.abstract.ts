@@ -3,12 +3,8 @@ import { UserRoleEnum } from '../../../domain/enums/user.enum';
 export interface IJwtPayload {
   sub: string;
   role: UserRoleEnum;
-  iat: number;
-  exp: number;
-}
-
-export interface IRefreshTokenPayload {
-  sub: string;
+  iat?: number;
+  exp?: number;
 }
 
 export interface IResetPasswordTokenPayload {
@@ -19,7 +15,7 @@ export interface IResetPasswordTokenPayload {
 export abstract class IJwtService {
   abstract checkToken<T>(token: string): Promise<T>;
   abstract createAccessToken(payload: IJwtPayload): Promise<string>;
-  abstract createRefreshToken(payload: IRefreshTokenPayload): Promise<string>;
+  abstract createRefreshToken(payload: IJwtPayload): Promise<string>;
   abstract createResetPasswordToken(
     payload: IResetPasswordTokenPayload,
   ): Promise<string>;
