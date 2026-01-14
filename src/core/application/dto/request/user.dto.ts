@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
   IsBoolean,
+  IsEmail,
   IsEnum,
   IsNotEmpty,
   IsOptional,
@@ -44,7 +45,7 @@ export class RegisterUserDto {
     required: true,
   })
   @IsNotEmpty()
-  @IsString()
+  @IsEmail()
   email: string;
 
   @ApiProperty({
@@ -84,7 +85,7 @@ export class LoginUserDto {
     required: true,
   })
   @IsNotEmpty()
-  @IsString()
+  @IsEmail()
   email: string;
 
   @ApiProperty({
@@ -92,9 +93,31 @@ export class LoginUserDto {
     description: 'Password for the user account',
     required: true,
   })
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+export class RegisterOauthUserDto {
   @IsNotEmpty()
   @IsString()
-  password: string;
+  oauthProvider: string;
+
+  @IsNotEmpty()
+  @IsString()
+  oauthProviderId: string;
+
+  @IsNotEmpty()
+  @IsString()
+  firstName: string;
+
+  @IsNotEmpty()
+  @IsString()
+  lastName: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  email: string;
 }
 
 export class UpdateUserDto extends PartialType(RegisterUserDto) {}

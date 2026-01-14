@@ -3,7 +3,6 @@ import { IJwtService } from 'src/core/application/ports/out/jwt.abstract';
 import { JwtTokenService } from './jwt-token.service';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-
 @Module({
   imports: [
     JwtModule.registerAsync({
