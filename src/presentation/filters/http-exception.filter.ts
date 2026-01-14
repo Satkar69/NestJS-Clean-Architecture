@@ -305,11 +305,43 @@ export class HttpExceptionFilter implements ExceptionFilter {
   }
 
   /**
+   * Determine if a request should be ignored from logging
+   * Filters out common browser/dev tools automated requests
+   */
+  private shouldIgnoreRequest(url: string, statusCode: number): boolean {
+    // Only filter 404 errors (not other error types)
+    if (statusCode !== HttpStatus.NOT_FOUND) {
+      return false;
+    }
+
+    // List of URL patterns to ignore
+    const ignorePatterns = [
+      '/.well-known/', // Well-known URIs (devtools, security.txt, etc.)
+      '/favicon.ico', // Favicon requests
+      '/robots.txt', // Robots file
+      '/sitemap.xml', // Sitemap
+      '/__webpack_hmr', // Webpack HMR
+      '/_next/', // Next.js routes
+      '/sw.js', // Service worker
+      '/manifest.json', // PWA manifest
+      '/apple-touch-icon', // iOS icons
+      '/browserconfig.xml', // Windows tile config
+    ];
+
+    return ignorePatterns.some((pattern) => url.includes(pattern));
+  }
+
+  /**
    * Log error with appropriate level
    */
   private logError(exception: unknown, request: Request, statusCode: number) {
     const { method, url, ip, headers } = request;
     const userAgent = headers['user-agent'] || 'Unknown';
+
+    // Ignore common noise from browser/dev tools automated requests
+    if (this.shouldIgnoreRequest(url, statusCode)) {
+      return;
+    }
 
     const logContext = {
       method,
