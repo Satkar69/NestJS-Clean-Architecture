@@ -23,12 +23,7 @@ export class GoogleStrategyService
     });
   }
 
-  async validate(
-    accessToken: string,
-    refreshToken: string,
-    profile: any,
-    done: VerifyCallback,
-  ): Promise<any> {
+  async validate(profile: any, done: VerifyCallback): Promise<any> {
     const { id, name, emails } = profile;
 
     const user: RegisterOauthUserDto = {
