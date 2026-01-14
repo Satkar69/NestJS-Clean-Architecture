@@ -4,9 +4,6 @@ import { Response } from 'express';
 
 export abstract class IUserService {
   abstract registerUser(dto: RegisterUserDto): Promise<UserModel>;
-  abstract loginUser(
-    dto: LoginUserDto,
-    res: Response,
-  ): Promise<{ accessToken: string; refreshToken: string }>;
+  abstract loginUser(dto: LoginUserDto, res: Response): Promise<any>;
   abstract logoutUser(res: any): Promise<any>;
 }
