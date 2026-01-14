@@ -41,7 +41,8 @@ export class AuthGuard implements CanActivate {
     ]) ||
       url.startsWith('/api/v1/user/register') ||
       url.startsWith('/api/v1/user/login') ||
-      url.startsWith('/api/v1/user/logout')
+      url.startsWith('/api/v1/user/logout') ||
+      url.startsWith('/api/v1/user/login/google/callback')
       ? true
       : false;
   }

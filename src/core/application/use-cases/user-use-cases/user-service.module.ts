@@ -3,7 +3,7 @@ import { DataServicesModule } from 'src/infrastructure/data-services/data-servic
 import { BcryptServiceModule } from 'src/infrastructure/services/bcrypt/bcrypt.module';
 import { UserFactoryUseCaseService } from './user-factory.service';
 import { UserService } from './user.service';
-import { JwtTokenModule } from 'src/infrastructure/services/jwt-token/jwt-token.module';
+import { JwtTokenModule } from 'src/infrastructure/services/auth-strategy/jwt-token/jwt-token.module';
 
 @Module({
   imports: [DataServicesModule, BcryptServiceModule, JwtTokenModule],

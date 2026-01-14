@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { DataServicesModule } from './infrastructure/data-services/data-services.module';
 import { ConfigModule } from '@nestjs/config';
 import { ClsStoreModule } from './infrastructure/services/cls-store/cls-store.module';
-import { JwtTokenModule } from './infrastructure/services/jwt-token/jwt-token.module';
+import { JwtTokenModule } from './infrastructure/services/auth-strategy/jwt-token/jwt-token.module';
 import { APP_GUARD, RouterModule } from '@nestjs/core';
 import routes from './presentation/controllers/routes';
 import { ControllerModule } from './presentation/controllers/controller.module';
