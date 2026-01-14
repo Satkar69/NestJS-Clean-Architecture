@@ -23,14 +23,13 @@ export class JwtTokenService implements IJwtService {
     this.accessTokenSecret =
       this.configService.getOrThrow<string>('JWT_SECRET');
     this.accessTokenExpiresIn = parseInt(
-      this.configService.getOrThrow<string>('JWT_EXPIRES_IN') || '3600',
+      this.configService.get<string>('JWT_EXPIRES_IN') || '3600',
       10,
     );
     this.refreshTokenSecret =
-      this.configService.getOrThrow<string>('JWT_REFRESH_SECRET') || '';
+      this.configService.getOrThrow<string>('JWT_REFRESH_SECRET');
     this.refreshTokenExpiresIn = parseInt(
-      this.configService.getOrThrow<string>('JWT_REFRESH_EXPIRES_IN') ||
-        '604800',
+      this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') || '604800',
       10,
     );
   }
