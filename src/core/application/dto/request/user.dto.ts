@@ -49,7 +49,7 @@ export class RegisterUserDto {
   email: string;
 
   @ApiProperty({
-    example: 'StrongPassword123!',
+    example: 'Password@123',
     description: 'Password for the user account',
     required: true,
   })
@@ -89,7 +89,7 @@ export class LoginUserDto {
   email: string;
 
   @ApiProperty({
-    example: 'StrongPassword123!',
+    example: 'Password@123',
     description: 'Password for the user account',
     required: true,
   })

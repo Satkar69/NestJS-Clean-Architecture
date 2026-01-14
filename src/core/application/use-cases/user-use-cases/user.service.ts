@@ -16,6 +16,7 @@ import {
 } from 'src/shared/exceptions';
 import { UserModel } from 'src/core/domain/model/user.model';
 import { Response } from 'express';
+import { UserRoleEnum } from 'src/core/domain/enums/user.enum';
 
 @Injectable()
 export class UserService implements IUserService {
@@ -52,6 +53,38 @@ export class UserService implements IUserService {
     return await this.bcryptService.compare(plainPassword, hashedPassword);
   }
 
+  async generateAccessAndRefreshTokens(
+    sub: string,
+    role: UserRoleEnum,
+    res: Response,
+  ) {
+    const tokenPayload = {
+      sub: sub,
+      role: role,
+    };
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.createAccessToken(tokenPayload),
+      this.jwtService.createRefreshToken(tokenPayload),
+    ]);
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: this.jwtService.accessTokenExpiresIn * 1000,
+      sameSite: 'none',
+    });
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: this.jwtService.refreshTokenExpiresIn * 1000,
+      sameSite: 'none',
+    });
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
   async registerUser(dto: RegisterUserDto) {
     const existingUser = await this.checkExistingUserByEmail(dto.email);
     if (existingUser.exists) {
@@ -81,29 +114,11 @@ export class UserService implements IUserService {
     if (!isPasswordValid) {
       throw new InvalidCredentialsException('Invalid Password Provided');
     }
-    const tokenPayload = {
-      sub: existingUser.user.id,
-      role: existingUser.user.userRole,
-    };
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.createAccessToken(tokenPayload),
-      this.jwtService.createRefreshToken(tokenPayload),
-    ]);
-
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-    return {
-      accessToken,
-      refreshToken,
-    };
+    await this.generateAccessAndRefreshTokens(
+      existingUser.user.id,
+      existingUser.user.userRole,
+      res,
+    );
   }
 
   async loginGoogleUser(userEmail: string, res: Response) {
@@ -113,30 +128,11 @@ export class UserService implements IUserService {
         `user with email "${userEmail}" does not exists.`,
       );
     }
-
-    const tokenPayload = {
-      sub: existingUser.user.id,
-      role: existingUser.user.userRole,
-    };
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.createAccessToken(tokenPayload),
-      this.jwtService.createRefreshToken(tokenPayload),
-    ]);
-
-    res.cookie('access_token', accessToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: true,
-      sameSite: 'none',
-    });
-    return {
-      accessToken,
-      refreshToken,
-    };
+    await this.generateAccessAndRefreshTokens(
+      existingUser.user.id,
+      existingUser.user.userRole,
+      res,
+    );
   }
 
   async validateOauthUser(dto: RegisterOauthUserDto) {

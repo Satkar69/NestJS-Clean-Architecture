@@ -7,6 +7,7 @@ import { IS_PUBLIC_KEY } from 'src/shared/decorators/public.decorator';
 import { Request, Response } from 'express';
 import { SessionExpiredException } from 'src/shared/exceptions';
 import { IS_PROTECTED_KEY } from 'src/shared/decorators/protected.decorator';
+import { TokenType } from 'src/shared/type/token-type';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -24,12 +25,12 @@ export class AuthGuard implements CanActivate {
     const isPublic = this.isPublicRoute(context, requestUrl);
     this.cls.set('isPublic', isPublic);
 
-    const isProtected = this.isProtectedRoute(context, requestUrl);
-    this.cls.set('isProtected', isProtected);
-
     if (isPublic) {
       return true;
     }
+    const isProtected = this.isProtectedRoute(context, requestUrl);
+    this.cls.set('isProtected', isProtected);
+
     await this.authenticateUser(request, response);
     return true;
   }
@@ -65,12 +66,13 @@ export class AuthGuard implements CanActivate {
     const refreshToken = this.extractRefreshToken(request);
 
     if (!accessToken || accessToken === 'null' || accessToken === 'undefined') {
+      console.log('No access token found, attempting to refresh...');
       await this.refreshAccessToken(response, refreshToken);
       return;
     }
 
     try {
-      const payload = await this.verifyToken(accessToken);
+      const payload = await this.verifyToken(accessToken, 'access');
       if (payload) {
         this.cls.set('tokenPayload', payload);
         return;
@@ -102,13 +104,13 @@ export class AuthGuard implements CanActivate {
     }
 
     try {
-      const refreshPayload = await this.verifyToken(refreshToken);
+      const refreshPayload = await this.verifyToken(refreshToken, 'refresh');
 
       if (!refreshPayload) {
         throw new SessionExpiredException();
       }
 
-      const newAccessToken = await this.jwtService.createRefreshToken({
+      const newAccessToken = await this.jwtService.createAccessToken({
         sub: refreshPayload.sub,
         role: refreshPayload.role,
       });
@@ -116,19 +118,23 @@ export class AuthGuard implements CanActivate {
       response.cookie('access_token', newAccessToken, {
         httpOnly: true,
         secure: true,
+        maxAge: this.jwtService.accessTokenExpiresIn * 1000,
         sameSite: 'none',
       });
 
-      const newPayload = await this.verifyToken(newAccessToken);
+      const newPayload = await this.verifyToken(newAccessToken, 'access');
       this.cls.set('tokenPayload', newPayload);
     } catch (error) {
       return;
     }
   }
 
-  private async verifyToken(token: string): Promise<any | null> {
+  private async verifyToken(
+    token: string,
+    tokenType: TokenType,
+  ): Promise<any | null> {
     try {
-      const decoded = await this.jwtService.checkToken(token.trim());
+      const decoded = await this.jwtService.checkToken(token.trim(), tokenType);
       return decoded;
     } catch (error) {
       console.log('Token verification failed:', error);

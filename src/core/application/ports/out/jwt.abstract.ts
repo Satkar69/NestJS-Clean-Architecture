@@ -1,3 +1,4 @@
+import { TokenType } from 'src/shared/type/token-type';
 import { UserRoleEnum } from '../../../domain/enums/user.enum';
 
 export interface IJwtPayload {
@@ -13,10 +14,16 @@ export interface IResetPasswordTokenPayload {
 }
 
 export abstract class IJwtService {
-  abstract checkToken<T>(token: string): Promise<T>;
+  readonly accessTokenSecret: string;
+  readonly accessTokenExpiresIn: number;
+  readonly refreshTokenSecret: string;
+  readonly refreshTokenExpiresIn: number;
+
+  abstract checkToken<T>(token: string, tokenType: TokenType): Promise<T>;
   abstract createAccessToken(payload: IJwtPayload): Promise<string>;
   abstract createRefreshToken(payload: IJwtPayload): Promise<string>;
   abstract createResetPasswordToken(
     payload: IResetPasswordTokenPayload,
+    S,
   ): Promise<string>;
 }
