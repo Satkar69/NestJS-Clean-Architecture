@@ -66,7 +66,6 @@ export class AuthGuard implements CanActivate {
     const refreshToken = this.extractRefreshToken(request);
 
     if (!accessToken || accessToken === 'null' || accessToken === 'undefined') {
-      console.log('No access token found, attempting to refresh...');
       await this.refreshAccessToken(response, refreshToken);
       return;
     }
