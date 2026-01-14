@@ -30,7 +30,7 @@ export class GoogleStrategyService
   ): Promise<any> {
     const { id, name, emails } = profile;
 
-    const user = this.userFactory.registerOAuthUser({
+    const user = this.userFactory.registerOauthUser({
       oauthProvider: 'google',
       oauthProviderId: id,
       firstName: name.givenName,

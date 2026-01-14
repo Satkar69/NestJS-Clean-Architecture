@@ -3,9 +3,14 @@ import { IDataServices } from 'src/core/application/ports/out/data-services.abst
 import { IBcryptService } from '../../ports/out/bcrypt.abstract';
 import { IJwtService } from '../../ports/out/jwt.abstract';
 import { UserFactoryService } from './user-factory.service';
-import { LoginUserDto, RegisterUserDto } from '../../dto/request/user.dto';
+import {
+  LoginUserDto,
+  RegisterOauthUserDto,
+  RegisterUserDto,
+} from '../../dto/request/user.dto';
 import { IUserService } from '../../ports/in/user-service.abstract';
 import {
+  BadRequestException,
   EntityAlreadyExistsException,
   InvalidCredentialsException,
 } from 'src/shared/exceptions';
@@ -99,6 +104,36 @@ export class UserService implements IUserService {
       accessToken,
       refreshToken,
     };
+  }
+
+  async loginGoogleUser(dto: RegisterOauthUserDto, res: Response) {
+    if (!dto) {
+      throw new BadRequestException('Invalid User Data, Unauthenticated');
+    }
+    const existingUser = await this.checkExistingUserByEmail(dto.email);
+    if (existingUser.exists) {
+      throw new EntityAlreadyExistsException('User', 'email', dto.email);
+    }
+    const newUser = this.userFactory.registerOauthUser(dto);
+    const createdUser = await this.dataServices.user.create(newUser);
+    const tokenPayload = {
+      sub: createdUser.id,
+      role: createdUser.userRole,
+    };
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.createAccessToken(tokenPayload),
+      this.jwtService.createRefreshToken(tokenPayload),
+    ]);
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
+    res.cookie('refresh_token', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'none',
+    });
   }
 
   async logoutUser(res: Response) {

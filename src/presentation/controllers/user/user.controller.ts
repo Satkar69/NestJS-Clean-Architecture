@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
 import {
   LoginUserDto,
@@ -9,12 +17,18 @@ import { CoreApiResponse } from 'src/presentation/api/core/core-api.response';
 import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
 import { UserClsStore } from 'src/shared/interface/cls-store/user-cls.interface';
+import { GoogleOauthGuard } from 'src/presentation/guards/google-Oauth.guard';
 @Controller()
 export class UserController {
   constructor(
     private cls: IClsStore<AppClsStore>,
     private userService: UserService,
   ) {}
+
+  @Get('google')
+  @UseGuards(GoogleOauthGuard)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  async auth() {}
 
   @ApiOperation({ summary: 'Register a new user' })
   @Post('/register')
@@ -36,6 +50,20 @@ export class UserController {
       await this.userService.loginUser(dto, res),
       200,
       'user logged in successfully',
+    );
+  }
+
+  @ApiOperation({ summary: 'Login or Register a user with Google OAuth' })
+  @Get('/login/google/callback')
+  @UseGuards(GoogleOauthGuard)
+  async googleLoginCallback(
+    @Req() req: any,
+    @Res({ passthrough: true }) res: any,
+  ) {
+    return CoreApiResponse.success(
+      await this.userService.loginGoogleUser(req.user, res),
+      200,
+      'user logged in with Google successfully',
     );
   }
 

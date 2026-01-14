@@ -18,7 +18,7 @@ export class UserFactoryService {
     if (dto.isActive !== undefined) user.isActive = dto.isActive;
     return user;
   }
-  registerOAuthUser(dto: RegisterOauthUserDto) {
+  registerOauthUser(dto: RegisterOauthUserDto) {
     const user = new UserModel();
     user.isOauthUser = true;
     if (dto.oauthProvider) user.oauthProvider = dto.oauthProvider;
