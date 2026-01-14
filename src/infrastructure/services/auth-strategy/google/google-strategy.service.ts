@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IGoogleStrategy } from 'src/core/application/ports/out/google-strategy.abstract';
-import { UserFactoryService } from 'src/core/application/use-cases/user-use-cases/user-factory.service';
 import { Strategy, VerifyCallback } from 'passport-google-oauth2';
 import { PassportStrategy } from '@nestjs/passport';
+import { RegisterOauthUserDto } from 'src/core/application/dto/request/user.dto';
+import { UserService } from 'src/core/application/use-cases/user-use-cases/user.service';
 
 @Injectable()
 export class GoogleStrategyService
@@ -12,7 +13,7 @@ export class GoogleStrategyService
 {
   constructor(
     private configService: ConfigService,
-    private userFactory: UserFactoryService,
+    private userService: UserService,
   ) {
     super({
       clientID: configService.get<string>('GOOGLE_CLIENT_ID') || '',
@@ -30,14 +31,16 @@ export class GoogleStrategyService
   ): Promise<any> {
     const { id, name, emails } = profile;
 
-    const user = this.userFactory.registerOauthUser({
+    const user: RegisterOauthUserDto = {
       oauthProvider: 'google',
       oauthProviderId: id,
       firstName: name.givenName,
       lastName: name.familyName,
       email: emails[0].value,
-    });
+    };
 
-    done(null, user);
+    const userData = await this.userService.validateOauthUser(user);
+
+    done(null, userData);
   }
 }

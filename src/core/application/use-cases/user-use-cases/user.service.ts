@@ -106,24 +106,23 @@ export class UserService implements IUserService {
     };
   }
 
-  async loginGoogleUser(dto: RegisterOauthUserDto, res: Response) {
-    if (!dto) {
-      throw new BadRequestException('Invalid User Data, Unauthenticated');
+  async loginGoogleUser(userEmail: string, res: Response) {
+    const existingUser = await this.checkExistingUserByEmail(userEmail);
+    if (!existingUser.exists || !existingUser.user) {
+      throw new InvalidCredentialsException(
+        `user with email "${userEmail}" does not exists.`,
+      );
     }
-    const existingUser = await this.checkExistingUserByEmail(dto.email);
-    if (existingUser.exists) {
-      throw new EntityAlreadyExistsException('User', 'email', dto.email);
-    }
-    const newUser = this.userFactory.registerOauthUser(dto);
-    const createdUser = await this.dataServices.user.create(newUser);
+
     const tokenPayload = {
-      sub: createdUser.id,
-      role: createdUser.userRole,
+      sub: existingUser.user.id,
+      role: existingUser.user.userRole,
     };
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.createAccessToken(tokenPayload),
       this.jwtService.createRefreshToken(tokenPayload),
     ]);
+
     res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: true,
@@ -134,6 +133,22 @@ export class UserService implements IUserService {
       secure: true,
       sameSite: 'none',
     });
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async validateOauthUser(dto: RegisterOauthUserDto) {
+    if (!dto) {
+      throw new BadRequestException('Invalid User Data, Unauthenticated');
+    }
+    const existingUser = await this.checkExistingUserByEmail(dto.email);
+    if (!existingUser.exists) {
+      const newUser = this.userFactory.registerOauthUser(dto);
+      return await this.dataServices.user.create(newUser);
+    }
+    return existingUser.user;
   }
 
   async logoutUser(res: Response) {

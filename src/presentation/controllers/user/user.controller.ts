@@ -25,11 +25,6 @@ export class UserController {
     private userService: UserService,
   ) {}
 
-  @Get('google')
-  @UseGuards(GoogleOauthGuard)
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  async auth() {}
-
   @ApiOperation({ summary: 'Register a new user' })
   @Post('/register')
   async registerUser(@Body() dto: RegisterUserDto) {
@@ -53,18 +48,20 @@ export class UserController {
     );
   }
 
-  @ApiOperation({ summary: 'Login or Register a user with Google OAuth' })
-  @Get('/login/google/callback')
+  @ApiOperation({ summary: ' Google OAuth login' })
+  @UseGuards(GoogleOauthGuard)
+  @Get('google/login')
+  googleLogin(@Req() req: any, @Res() res: any) {}
+
+  @ApiOperation({ summary: ' Google OAuth callback' })
+  @Get('/google/login/callback')
   @UseGuards(GoogleOauthGuard)
   async googleLoginCallback(
     @Req() req: any,
     @Res({ passthrough: true }) res: any,
   ) {
-    return CoreApiResponse.success(
-      await this.userService.loginGoogleUser(req.user, res),
-      200,
-      'user logged in with Google successfully',
-    );
+    await this.userService.loginGoogleUser(req.user?.email, res);
+    return res.redirect('http://localhost:5000/api/v1/user/me');
   }
 
   @ApiOperation({ summary: 'Get current logged in user' })

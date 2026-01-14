@@ -25,6 +25,7 @@ export class UserFactoryService {
     if (dto.oauthProviderId) user.oauthProviderId = dto.oauthProviderId;
     if (dto.firstName) user.firstName = dto.firstName;
     if (dto.lastName) user.lastName = dto.lastName;
+    if (dto.email) user.email = dto.email;
     return user;
   }
 }
