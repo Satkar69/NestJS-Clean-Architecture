@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IDataServices } from 'src/core/application/ports/out/data-services.abstract';
 import { IBcryptService } from '../../ports/out/bcrypt.abstract';
 import { IJwtService } from '../../ports/out/jwt.abstract';
-import { UserFactoryUseCaseService } from './user-factory.service';
+import { UserFactoryService } from './user-factory.service';
 import { LoginUserDto, RegisterUserDto } from '../../dto/request/user.dto';
 import { IUserService } from '../../ports/in/user-service.abstract';
 import {
@@ -10,14 +10,13 @@ import {
   InvalidCredentialsException,
 } from 'src/shared/exceptions';
 import { UserModel } from 'src/core/domain/model/user.model';
-import { UserRoleEnum } from 'src/core/domain/enums/user.enum';
 import { Response } from 'express';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
     private dataServices: IDataServices,
-    private userFactory: UserFactoryUseCaseService,
+    private userFactory: UserFactoryService,
     private bcryptService: IBcryptService,
     private jwtService: IJwtService,
   ) {}
@@ -71,7 +70,7 @@ export class UserService implements IUserService {
     }
     const isPasswordValid = await this.checkPasswordMatch(
       dto.password,
-      existingUser.user.password,
+      existingUser.user.password ?? '',
     );
 
     if (!isPasswordValid) {
@@ -81,7 +80,6 @@ export class UserService implements IUserService {
       sub: existingUser.user.id,
       role: existingUser.user.userRole,
     };
-    console.log('Token Payload:', tokenPayload);
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.createAccessToken(tokenPayload),
       this.jwtService.createRefreshToken(tokenPayload),

@@ -1,6 +1,12 @@
 import { UserModel } from 'src/core/domain/model/user.model';
-import { RegisterUserDto } from '../../dto/request/user.dto';
+import { LoginUserDto, RegisterUserDto } from '../../dto/request/user.dto';
+import { Response } from 'express';
 
 export abstract class IUserService {
   abstract registerUser(dto: RegisterUserDto): Promise<UserModel>;
+  abstract loginUser(
+    dto: LoginUserDto,
+    res: Response,
+  ): Promise<{ accessToken: string; refreshToken: string }>;
+  abstract logoutUser(res: any): Promise<any>;
 }

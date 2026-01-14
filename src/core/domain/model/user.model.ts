@@ -6,7 +6,10 @@ export class UserModel extends BaseModel {
   middleName?: string;
   lastName: string;
   email: string;
-  password: string;
+  isOauthUser: boolean = false;
+  oauthProvider?: string;
+  oauthProviderId?: string;
+  password?: string;
   userRole: UserRoleEnum = UserRoleEnum.USER;
   isActive: boolean = true;
 }

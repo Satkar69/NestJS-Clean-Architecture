@@ -16,8 +16,17 @@ export class UserEntity extends BaseEntity {
   @Column({ name: 'email', length: 150, unique: true })
   email: string;
 
-  @Column({ name: 'password', length: 255 })
-  password: string;
+  @Column({ name: 'is_oauth_user', nullable: true })
+  isOauthUser: boolean;
+
+  @Column({ name: 'oauth_provider', length: 100, nullable: true })
+  oauthProvider?: string;
+
+  @Column({ name: 'oauth_provider_id', length: 100, nullable: true })
+  oauthProviderId?: string;
+
+  @Column({ name: 'password', length: 255, nullable: true })
+  password?: string;
 
   @Column({
     name: 'user_role',
