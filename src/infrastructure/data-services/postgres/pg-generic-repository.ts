@@ -3,14 +3,14 @@ import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interf
 import { IPaginationOptions } from 'src/shared/interface/response/pagination-options.interface';
 import { IPaginationData } from 'src/shared/interface/response/pagination-data.interface';
 import {
-  IGenericRepository,
+  IPgGenericRepository,
   OtherMethodOptions,
-} from 'src/core/application/ports/out/generic-repository.abstract';
+} from 'src/core/application/ports/out/pg-generic-repository.abstract';
 import { Repository, EntityManager, ObjectLiteral } from 'typeorm';
 import { NotFoundException } from 'src/shared/exceptions';
 export class PgGenericRepository<
   T extends ObjectLiteral,
-> implements IGenericRepository<T> {
+> implements IPgGenericRepository<T> {
   protected _cls: IClsStore<AppClsStore>;
   protected _repository: Repository<T>;
 
