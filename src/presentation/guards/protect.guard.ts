@@ -1,15 +1,15 @@
 import { CanActivate, Injectable } from '@nestjs/common';
-import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
+import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
-import { IDataServices } from 'src/core/application/ports/out/data-services.abstract';
+import { IPgDataServices } from 'src/core/application/ports/out/data-services/postgres/pg-data-services.abstract';
 import { UnauthorizedException } from 'src/shared/exceptions';
-import { IJwtPayload } from 'src/core/application/ports/out/jwt.abstract';
+import { IJwtPayload } from 'src/core/application/ports/out/services/jwt.abstract';
 
 @Injectable()
 export class ProtectGuard implements CanActivate {
   constructor(
     private cls: IClsStore<AppClsStore>,
-    private dataServices: IDataServices,
+    private dataServices: IPgDataServices,
   ) {}
 
   async canActivate(): Promise<boolean> {

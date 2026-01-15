@@ -6,4 +6,4 @@ import { GoogleStrategyModule } from './google/google-strategy.module';
   imports: [JwtTokenModule, GoogleStrategyModule],
   exports: [JwtTokenModule, GoogleStrategyModule],
 })
-export class AuthStrategyModule {}
+export class AuthModule {}

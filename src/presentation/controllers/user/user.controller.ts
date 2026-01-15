@@ -14,7 +14,7 @@ import {
 } from 'src/core/application/dto/request/user.dto';
 import { UserService } from 'src/core/application/use-cases/user-use-cases/user.service';
 import { CoreApiResponse } from 'src/presentation/api/core/core-api.response';
-import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
+import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
 import { UserClsStore } from 'src/shared/interface/cls-store/user-cls.interface';
 import { GoogleOauthGuard } from 'src/presentation/guards/google-Oauth.guard';

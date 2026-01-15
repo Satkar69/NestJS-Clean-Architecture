@@ -1,18 +1,18 @@
 import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
 import InjectableString from 'src/shared/constants/injectable-string';
-import { IDataServices } from 'src/core/application/ports/out/data-services.abstract';
+import { IPgDataServices } from 'src/core/application/ports/out/data-services/postgres/pg-data-services.abstract';
 import { UserEntity } from './entities/user.entity';
 import { PgGenericRepository } from './pg-generic-repository';
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
+import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
 import { TransactionException } from 'src/shared/exceptions';
-import { IGenericRepository } from 'src/core/application/ports/out/generic-repository.abstract';
+import { IPgGenericRepository } from 'src/core/application/ports/out/data-services/postgres/pg-generic-repository.abstract';
 import { UserModel } from 'src/core/domain/model/user.model';
 
 @Injectable()
-export class PgDataService implements IDataServices, OnApplicationBootstrap {
-  user: IGenericRepository<UserModel>;
+export class PgDataService implements IPgDataServices, OnApplicationBootstrap {
+  user: IPgGenericRepository<UserModel>;
 
   constructor(
     private readonly cls: IClsStore<AppClsStore>,
