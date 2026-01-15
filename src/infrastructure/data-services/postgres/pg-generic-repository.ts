@@ -1,11 +1,11 @@
-import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
+import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
 import { IPaginationOptions } from 'src/shared/interface/response/pagination-options.interface';
 import { IPaginationData } from 'src/shared/interface/response/pagination-data.interface';
 import {
   IPgGenericRepository,
   OtherMethodOptions,
-} from 'src/core/application/ports/out/pg-generic-repository.abstract';
+} from 'src/core/application/ports/out/data-services/postgres/pg-generic-repository.abstract';
 import { Repository, EntityManager, ObjectLiteral } from 'typeorm';
 import { NotFoundException } from 'src/shared/exceptions';
 export class PgGenericRepository<

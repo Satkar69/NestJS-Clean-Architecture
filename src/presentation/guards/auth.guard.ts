@@ -1,8 +1,8 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IClsStore } from 'src/core/application/ports/out/cls-store.abstract';
+import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
-import { IJwtService } from 'src/core/application/ports/out/jwt.abstract';
+import { IJwtService } from 'src/core/application/ports/out/services/jwt.abstract';
 import { IS_PUBLIC_KEY } from 'src/shared/decorators/public.decorator';
 import { Request, Response } from 'express';
 import { SessionExpiredException } from 'src/shared/exceptions';

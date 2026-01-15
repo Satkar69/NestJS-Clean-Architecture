@@ -11,13 +11,13 @@ import { ResponseInterceptor } from './presentation/interceptors/response.interc
 import { HttpExceptionFilter } from './presentation/filters';
 import { AuthGuard } from './presentation/guards/auth.guard';
 import { ProtectGuard } from './presentation/guards/protect.guard';
-import { AuthStrategyModule } from './infrastructure/services/auth-strategy/auth-strategy.module';
+import { AuthModule } from './infrastructure/services/auth/auth.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', isGlobal: true }),
     ClsStoreModule,
-    AuthStrategyModule,
+    AuthModule,
     DataServicesModule,
     RouterModule.register(routes),
     ControllerModule,

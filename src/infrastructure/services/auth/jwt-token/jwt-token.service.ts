@@ -5,7 +5,7 @@ import {
   IJwtPayload,
   IJwtService,
   IResetPasswordTokenPayload,
-} from 'src/core/application/ports/out/jwt.abstract';
+} from 'src/core/application/ports/out/services/jwt.abstract';
 import { InvalidTokenException } from 'src/shared/exceptions';
 import { TokenType } from 'src/shared/type/token-type';
 

@@ -1,5 +1,5 @@
 import { TokenType } from 'src/shared/type/token-type';
-import { UserRoleEnum } from '../../../domain/enums/user.enum';
+import { UserRoleEnum } from '../../../../domain/enums/user.enum';
 
 export interface IJwtPayload {
   sub: string;

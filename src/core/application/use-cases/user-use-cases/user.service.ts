@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { IDataServices } from 'src/core/application/ports/out/data-services.abstract';
-import { IBcryptService } from '../../ports/out/bcrypt.abstract';
-import { IJwtService } from '../../ports/out/jwt.abstract';
+import { IPgDataServices } from 'src/core/application/ports/out/data-services/postgres/pg-data-services.abstract';
+import { IBcryptService } from '../../ports/out/services/bcrypt.abstract';
+import { IJwtService } from '../../ports/out/services/jwt.abstract';
 import { UserFactoryService } from './user-factory.service';
 import {
   LoginUserDto,
@@ -21,7 +21,7 @@ import { UserRoleEnum } from 'src/core/domain/enums/user.enum';
 @Injectable()
 export class UserService implements IUserService {
   constructor(
-    private dataServices: IDataServices,
+    private dataServices: IPgDataServices,
     private userFactory: UserFactoryService,
     private bcryptService: IBcryptService,
     private jwtService: IJwtService,
