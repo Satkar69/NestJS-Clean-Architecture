@@ -43,9 +43,6 @@ export class JwtTokenService implements IJwtService {
       case 'refresh':
         secret = this.refreshTokenSecret;
         break;
-      case 'reset-password':
-        secret = this.refreshTokenSecret;
-        break;
       default:
         throw new InvalidTokenException(tokenType, 'Invalid token type');
     }
