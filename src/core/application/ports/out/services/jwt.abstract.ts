@@ -24,6 +24,5 @@ export abstract class IJwtService {
   abstract createRefreshToken(payload: IJwtPayload): Promise<string>;
   abstract createResetPasswordToken(
     payload: IResetPasswordTokenPayload,
-    S,
   ): Promise<string>;
 }
