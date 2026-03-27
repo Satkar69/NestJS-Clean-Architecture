@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { UserModel } from 'src/core/domain/model/user.model';
+import { UserModel } from '@/src/core/domain/model/user.model';
 import {
   RegisterOauthUserDto,
   RegisterUserDto,

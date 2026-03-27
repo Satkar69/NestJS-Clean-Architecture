@@ -4,8 +4,8 @@ import {
   ValidationError as ClassValidatorError,
 } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { ValidationException, ValidationError } from 'src/shared/exceptions';
-
+import { ValidationErrorInterface } from '@/src/shared/interface/validation-error.interface';
+import { ValidationException } from '@/src/shared/exceptions';
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {
   async transform(value: any, { metatype }: ArgumentMetadata) {
@@ -45,8 +45,10 @@ export class ValidationPipe implements PipeTransform<any> {
     return !types.includes(metatype);
   }
 
-  private formatErrors(errors: ClassValidatorError[]): ValidationError[] {
-    const validationErrors: ValidationError[] = [];
+  private formatErrors(
+    errors: ClassValidatorError[],
+  ): ValidationErrorInterface[] {
+    const validationErrors: ValidationErrorInterface[] = [];
 
     for (const error of errors) {
       if (error.constraints) {

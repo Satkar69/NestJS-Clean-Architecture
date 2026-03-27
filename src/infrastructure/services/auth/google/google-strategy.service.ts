@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { IGoogleStrategy } from 'src/core/application/ports/out/services/google-strategy.abstract';
+import { IGoogleStrategy } from '@/src/core/application/ports/out/services/google-strategy.abstract';
 import { Strategy, VerifyCallback } from 'passport-google-oauth2';
 import { PassportStrategy } from '@nestjs/passport';
-import { RegisterOauthUserDto } from 'src/core/application/dto/request/user.dto';
-import { UserService } from 'src/core/application/use-cases/user-use-cases/user.service';
+import { RegisterOauthUserDto } from '@/src/core/application/dto/request/user.dto';
+import { UserService } from '@/src/core/application/use-cases/user-use-cases/user.service';
 
 @Injectable()
 export class GoogleStrategyService

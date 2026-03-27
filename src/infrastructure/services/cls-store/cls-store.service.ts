@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ClsService } from 'nestjs-cls';
-import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
-import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
+import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
+import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
 
 @Injectable()
 export class ClsStoreService implements IClsStore<AppClsStore> {

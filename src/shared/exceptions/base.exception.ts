@@ -2,7 +2,7 @@
  * Base Exception Class
  * All custom exceptions should extend this class
  */
-export abstract class BaseException extends Error {
+export class BaseException extends Error {
   public readonly timestamp: Date;
   public readonly context?: Record<string, any>;
 

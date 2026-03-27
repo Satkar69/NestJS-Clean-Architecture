@@ -1,15 +1,16 @@
 import { CanActivate, Injectable } from '@nestjs/common';
-import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
-import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
-import { IPgDataServices } from 'src/core/application/ports/out/data-services/postgres/pg-data-services.abstract';
-import { UnauthorizedException } from 'src/shared/exceptions';
-import { IJwtPayload } from 'src/core/application/ports/out/services/jwt.abstract';
+import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
+import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
+import { IDataServices } from '@/src/core/application/ports/out/data-services/data-services.abstract';
+import { AppException } from '@/src/shared/exceptions';
+import { IJwtPayload } from '@/src/core/application/ports/out/services/jwt.abstract';
+import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 
 @Injectable()
 export class ProtectGuard implements CanActivate {
   constructor(
     private cls: IClsStore<AppClsStore>,
-    private dataServices: IPgDataServices,
+    private dataServices: IDataServices,
   ) {}
 
   async canActivate(): Promise<boolean> {
@@ -28,7 +29,10 @@ export class ProtectGuard implements CanActivate {
   private async authorizeUser(): Promise<void> {
     const payload = this.cls.get<IJwtPayload>('tokenPayload');
     if (!payload) {
-      throw new UnauthorizedException();
+      throw new AppException(
+        StatusCodeEnum.UNAUTHORIZED,
+        'No token payload found',
+      );
     }
     const user = await this.getUserFromPayload(payload.sub);
     this.cls.set('user', {
@@ -44,7 +48,10 @@ export class ProtectGuard implements CanActivate {
   private async getUserFromPayload(userId: string) {
     const user = await this.dataServices.user.getOneOrNull({ id: userId });
     if (!user) {
-      throw new UnauthorizedException();
+      throw new AppException(
+        StatusCodeEnum.UNAUTHORIZED,
+        'User not found for the provided token',
+      );
     }
     return user;
   }

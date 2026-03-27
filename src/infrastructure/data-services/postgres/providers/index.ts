@@ -1,4 +1,4 @@
-import InjectableString from 'src/shared/constants/injectable-string';
+import InjectableString from '@/src/shared/constants/injectable-string';
 import { DataSource } from 'typeorm';
 import { pgDatabaseProvider } from './pgDatabase.provider';
 import { UserEntity } from '../entities/user.entity';

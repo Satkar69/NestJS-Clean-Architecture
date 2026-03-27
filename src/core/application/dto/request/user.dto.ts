@@ -9,7 +9,7 @@ import {
   IsString,
 } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
-import { UserRoleEnum } from 'src/core/domain/enums/user.enum';
+import { UserRoleEnum } from '@/src/core/domain/enums/user.enum';
 
 export class RegisterUserDto {
   @ApiProperty({

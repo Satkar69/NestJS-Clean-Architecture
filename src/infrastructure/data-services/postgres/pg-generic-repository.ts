@@ -1,16 +1,17 @@
-import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
-import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
-import { IPaginationOptions } from 'src/shared/interface/response/pagination-options.interface';
-import { IPaginationData } from 'src/shared/interface/response/pagination-data.interface';
+import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
+import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
+import { IPaginationOptions } from '@/src/shared/interface/response/pagination-options.interface';
+import { IPaginationData } from '@/src/shared/interface/response/pagination-data.interface';
 import {
-  IPgGenericRepository,
+  IGenericRepository,
   OtherMethodOptions,
-} from 'src/core/application/ports/out/data-services/postgres/pg-generic-repository.abstract';
+} from '@/src/core/application/ports/out/data-services/generic-repository.abstract';
 import { Repository, EntityManager, ObjectLiteral } from 'typeorm';
-import { NotFoundException } from 'src/shared/exceptions';
+import { AppException } from '@/src/shared/exceptions';
+import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 export class PgGenericRepository<
   T extends ObjectLiteral,
-> implements IPgGenericRepository<T> {
+> implements IGenericRepository<T> {
   protected _cls: IClsStore<AppClsStore>;
   protected _repository: Repository<T>;
 
@@ -91,7 +92,10 @@ export class PgGenericRepository<
     });
     if (!item) {
       const entityName = this._repository.metadata.name;
-      throw new NotFoundException(entityName);
+      throw new AppException(
+        StatusCodeEnum.NOT_FOUND,
+        `${entityName} not found`,
+      );
     }
     return item;
   }

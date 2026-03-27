@@ -1,4 +1,4 @@
-import { UserModel } from 'src/core/domain/model/user.model';
+import { UserModel } from '@/src/core/domain/model/user.model';
 import { LoginUserDto, RegisterUserDto } from '../../dto/request/user.dto';
 import { Response } from 'express';
 

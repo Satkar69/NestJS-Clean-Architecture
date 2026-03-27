@@ -1,5 +1,5 @@
-import { IPaginationData } from 'src/shared/interface/response/pagination-data.interface';
-import { RelationType } from 'src/shared/type/relation-type';
+import { IPaginationData } from '@/src/shared/interface/response/pagination-data.interface';
+import { RelationType } from '@/src/shared/type/relation-type';
 
 export type keyValueObj = {
   [key: string]: any;
@@ -9,7 +9,7 @@ export type OtherMethodOptions = {
   withDeleted?: boolean;
 };
 
-export abstract class IPgGenericRepository<T> {
+export abstract class IGenericRepository<T> {
   abstract getAll(
     condition?: keyValueObj | any[],
     relations?: RelationType,

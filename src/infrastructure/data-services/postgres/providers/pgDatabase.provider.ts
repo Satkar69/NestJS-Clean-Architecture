@@ -1,8 +1,9 @@
 import { Logger } from '@nestjs/common';
-import { DatabaseConnectionException } from 'src/shared/exceptions';
+import { AppException } from '@/src/shared/exceptions';
 import { createPgDataSource } from '../pg-data-source';
-import InjectableString from 'src/shared/constants/injectable-string';
+import InjectableString from '@/src/shared/constants/injectable-string';
 import { ConfigService } from '@nestjs/config';
+import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 
 export const pgDatabaseProvider = [
   {
@@ -16,15 +17,16 @@ export const pgDatabaseProvider = [
           'PgDatabaseProvider',
         );
         return dataSource;
-      } catch (error) {
+      } catch (error: Error | any) {
         Logger.error(
           'Error during Data Source initialization',
           'PgDatabaseProvider',
           error,
         );
-        throw new DatabaseConnectionException(
-          error.message || 'Failed to initialize database connection',
-          error.status || 500,
+        throw new AppException(
+          StatusCodeEnum.INTERNAL_SERVER_ERROR,
+          'Failed to initialize database connection',
+          { error: error instanceof Error ? error.message : String(error) },
         );
       }
     },
