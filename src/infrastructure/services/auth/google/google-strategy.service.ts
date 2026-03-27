@@ -4,7 +4,7 @@ import { IGoogleStrategy } from '@/src/core/application/ports/out/services/googl
 import { Strategy, VerifyCallback } from 'passport-google-oauth2';
 import { PassportStrategy } from '@nestjs/passport';
 import { RegisterOauthUserDto } from '@/src/core/application/dto/request/user.dto';
-import { UserService } from '@/src/core/application/use-cases/user-use-cases/user.service';
+import { UserUseCaseService } from '@/src/core/application/use-cases/user-use-cases/user-use-case.service';
 
 @Injectable()
 export class GoogleStrategyService
@@ -13,7 +13,7 @@ export class GoogleStrategyService
 {
   constructor(
     private configService: ConfigService,
-    private userService: UserService,
+    private userService: UserUseCaseService,
   ) {
     super({
       clientID: configService.getOrThrow<string>('GOOGLE_CLIENT_ID'),

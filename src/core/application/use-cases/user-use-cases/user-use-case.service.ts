@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { IDataServices } from '../../ports/out/data-services/data-services.abstract';
 import { IBcryptService } from '../../ports/out/services/bcrypt.abstract';
 import { IJwtService } from '../../ports/out/services/jwt.abstract';
-import { UserFactoryService } from './user-factory.service';
+import { UserFactoryUseCaseService } from './user-use-case-factory.service';
 import {
   LoginUserDto,
   RegisterOauthUserDto,
@@ -18,10 +18,10 @@ import { AppException } from '@/src/shared/exceptions';
 import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 
 @Injectable()
-export class UserService implements IUserService {
+export class UserUseCaseService implements IUserService {
   constructor(
     private dataServices: IDataServices,
-    private userFactory: UserFactoryService,
+    private userFactory: UserFactoryUseCaseService,
     private bcryptService: IBcryptService,
     private jwtService: IJwtService,
   ) {}
