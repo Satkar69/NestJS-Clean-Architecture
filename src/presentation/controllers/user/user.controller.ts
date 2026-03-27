@@ -12,7 +12,7 @@ import {
   LoginUserDto,
   RegisterUserDto,
 } from '@/src/core/application/dto/request/user.dto';
-import { UserService } from '@/src/core/application/use-cases/user-use-cases/user.service';
+import { UserUseCaseService } from '@/src/core/application/use-cases/user-use-cases/user-use-case.service';
 import { CoreApiResponse } from '@/src/presentation/api/core/core-api.response';
 import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
@@ -22,7 +22,7 @@ import { GoogleOauthGuard } from '@/src/presentation/guards/google-Oauth.guard';
 export class UserController {
   constructor(
     private cls: IClsStore<AppClsStore>,
-    private userService: UserService,
+    private userService: UserUseCaseService,
   ) {}
 
   @ApiOperation({ summary: 'Register a new user' })
