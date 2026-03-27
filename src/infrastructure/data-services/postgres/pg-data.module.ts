@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { pgDatabaseProvider } from './providers/pgDatabase.provider';
-import { ClsStoreModule } from 'src/infrastructure/services/cls-store/cls-store.module';
+import { ClsStoreModule } from '../../services/cls-store/cls-store.module';
 import providers from './providers';
-import { IPgDataServices } from 'src/core/application/ports/out/data-services/postgres/pg-data-services.abstract';
+import { IDataServices } from '@/src/core/application/ports/out/data-services/data-services.abstract';
 import { PgDataService } from './pg-data.service';
 
 @Module({
@@ -10,10 +10,10 @@ import { PgDataService } from './pg-data.service';
   providers: [
     ...providers,
     {
-      provide: IPgDataServices,
+      provide: IDataServices,
       useClass: PgDataService,
     },
   ],
-  exports: [...pgDatabaseProvider, IPgDataServices],
+  exports: [...pgDatabaseProvider, IDataServices],
 })
 export class PgDataServicesModule {}

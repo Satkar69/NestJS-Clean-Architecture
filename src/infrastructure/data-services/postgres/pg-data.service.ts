@@ -1,18 +1,19 @@
 import { Inject, Injectable, OnApplicationBootstrap } from '@nestjs/common';
-import InjectableString from 'src/shared/constants/injectable-string';
-import { IPgDataServices } from 'src/core/application/ports/out/data-services/postgres/pg-data-services.abstract';
+import InjectableString from '@/src/shared/constants/injectable-string';
+import { IDataServices } from '@/src/core/application/ports/out/data-services/data-services.abstract';
 import { UserEntity } from './entities/user.entity';
 import { PgGenericRepository } from './pg-generic-repository';
 import { DataSource, EntityManager, Repository } from 'typeorm';
-import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
-import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
-import { TransactionException } from 'src/shared/exceptions';
-import { IPgGenericRepository } from 'src/core/application/ports/out/data-services/postgres/pg-generic-repository.abstract';
-import { UserModel } from 'src/core/domain/model/user.model';
+import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
+import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
+import { IGenericRepository } from '@/src/core/application/ports/out/data-services/generic-repository.abstract';
+import { UserModel } from '@/src/core/domain/model/user.model';
+import { AppException } from '@/src/shared/exceptions';
+import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 
 @Injectable()
-export class PgDataService implements IPgDataServices, OnApplicationBootstrap {
-  user: IPgGenericRepository<UserModel>;
+export class PgDataService implements IDataServices, OnApplicationBootstrap {
+  user: IGenericRepository<UserModel>;
 
   constructor(
     private readonly cls: IClsStore<AppClsStore>,
@@ -43,9 +44,10 @@ export class PgDataService implements IPgDataServices, OnApplicationBootstrap {
       await queryRunner.rollbackTransaction();
       const errorMessage =
         error instanceof Error ? error.message : String(error);
-      throw new TransactionException('database transaction', errorMessage, {
-        originalError: error,
-      });
+      throw new AppException(
+        StatusCodeEnum.INTERNAL_SERVER_ERROR,
+        `Transaction failed: ${errorMessage}`,
+      );
     } finally {
       await queryRunner.release();
     }

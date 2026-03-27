@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { IPgDataServices } from 'src/core/application/ports/out/data-services/postgres/pg-data-services.abstract';
+import { IDataServices } from '../../ports/out/data-services/data-services.abstract';
 import { IBcryptService } from '../../ports/out/services/bcrypt.abstract';
 import { IJwtService } from '../../ports/out/services/jwt.abstract';
 import { UserFactoryService } from './user-factory.service';
@@ -9,19 +9,18 @@ import {
   RegisterUserDto,
 } from '../../dto/request/user.dto';
 import { IUserService } from '../../ports/in/user-service.abstract';
-import {
-  BadRequestException,
-  EntityAlreadyExistsException,
-  InvalidCredentialsException,
-} from 'src/shared/exceptions';
-import { UserModel } from 'src/core/domain/model/user.model';
+import { BadRequestException } from '@nestjs/common';
+
+import { UserModel } from '@/src/core/domain/model/user.model';
 import { Response } from 'express';
-import { UserRoleEnum } from 'src/core/domain/enums/user.enum';
+import { UserRoleEnum } from '@/src/core/domain/enums/user.enum';
+import { AppException } from '@/src/shared/exceptions';
+import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
-    private dataServices: IPgDataServices,
+    private dataServices: IDataServices,
     private userFactory: UserFactoryService,
     private bcryptService: IBcryptService,
     private jwtService: IJwtService,
@@ -88,7 +87,10 @@ export class UserService implements IUserService {
   async registerUser(dto: RegisterUserDto) {
     const existingUser = await this.checkExistingUserByEmail(dto.email);
     if (existingUser.exists) {
-      throw new EntityAlreadyExistsException('User', 'email', dto.email);
+      throw new AppException(
+        StatusCodeEnum.CONFLICT,
+        'User with this email already exists',
+      );
     }
     const hashedPassword = await this.bcryptService.hash(dto.password);
     const user = this.userFactory.registerUser({
@@ -102,7 +104,8 @@ export class UserService implements IUserService {
     const existingUser = await this.checkExistingUserByEmail(dto.email);
 
     if (!existingUser.exists || !existingUser.user) {
-      throw new InvalidCredentialsException(
+      throw new AppException(
+        StatusCodeEnum.UNAUTHORIZED,
         `user with email "${dto.email}" does not exists.`,
       );
     }
@@ -112,7 +115,10 @@ export class UserService implements IUserService {
     );
 
     if (!isPasswordValid) {
-      throw new InvalidCredentialsException('Invalid Password Provided');
+      throw new AppException(
+        StatusCodeEnum.UNAUTHORIZED,
+        'Invalid credentials provided',
+      );
     }
     await this.generateAccessAndRefreshTokens(
       existingUser.user.id,
@@ -124,7 +130,8 @@ export class UserService implements IUserService {
   async loginGoogleUser(userEmail: string, res: Response) {
     const existingUser = await this.checkExistingUserByEmail(userEmail);
     if (!existingUser.exists || !existingUser.user) {
-      throw new InvalidCredentialsException(
+      throw new AppException(
+        StatusCodeEnum.NOT_FOUND,
         `user with email "${userEmail}" does not exists.`,
       );
     }
@@ -137,7 +144,10 @@ export class UserService implements IUserService {
 
   async validateOauthUser(dto: RegisterOauthUserDto) {
     if (!dto) {
-      throw new BadRequestException('Invalid User Data, Unauthenticated');
+      throw new AppException(
+        StatusCodeEnum.BAD_REQUEST,
+        'Invalid User Data, Unauthenticated',
+      );
     }
     const existingUser = await this.checkExistingUserByEmail(dto.email);
     if (!existingUser.exists) {

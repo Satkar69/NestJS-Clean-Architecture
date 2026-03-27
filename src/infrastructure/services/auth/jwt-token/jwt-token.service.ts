@@ -5,9 +5,10 @@ import {
   IJwtPayload,
   IJwtService,
   IResetPasswordTokenPayload,
-} from 'src/core/application/ports/out/services/jwt.abstract';
-import { InvalidTokenException } from 'src/shared/exceptions';
-import { TokenType } from 'src/shared/type/token-type';
+} from '@/src/core/application/ports/out/services/jwt.abstract';
+import { AppException } from '@/src/shared/exceptions';
+import { TokenType } from '@/src/shared/type/token-type';
+import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 
 @Injectable()
 export class JwtTokenService implements IJwtService {
@@ -44,7 +45,10 @@ export class JwtTokenService implements IJwtService {
         secret = this.refreshTokenSecret;
         break;
       default:
-        throw new InvalidTokenException(tokenType, 'Invalid token type');
+        throw new AppException(
+          StatusCodeEnum.BAD_REQUEST,
+          'Invalid token type',
+        );
     }
     const decode = await this.jwtService.verifyAsync(token, { secret });
     return decode;

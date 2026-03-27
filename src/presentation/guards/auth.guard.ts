@@ -1,13 +1,14 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { IClsStore } from 'src/core/application/ports/out/services/cls-store.abstract';
-import { AppClsStore } from 'src/shared/interface/cls-store/app-cls-store.interface';
-import { IJwtService } from 'src/core/application/ports/out/services/jwt.abstract';
-import { IS_PUBLIC_KEY } from 'src/shared/decorators/public.decorator';
+import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
+import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
+import { IJwtService } from '@/src/core/application/ports/out/services/jwt.abstract';
+import { IS_PUBLIC_KEY } from '@/src/shared/decorators/public.decorator';
 import { Request, Response } from 'express';
-import { SessionExpiredException } from 'src/shared/exceptions';
-import { IS_PROTECTED_KEY } from 'src/shared/decorators/protected.decorator';
-import { TokenType } from 'src/shared/type/token-type';
+import { AppException } from '@/src/shared/exceptions';
+import { IS_PROTECTED_KEY } from '@/src/shared/decorators/protected.decorator';
+import { TokenType } from '@/src/shared/type/token-type';
+import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -78,14 +79,18 @@ export class AuthGuard implements CanActivate {
       }
 
       await this.refreshAccessToken(response, refreshToken);
-    } catch (error) {
+    } catch (error: Error | any) {
       if (
         error.name === 'TokenExpiredError' ||
         error.name === 'JsonWebTokenError'
       ) {
         await this.refreshAccessToken(response, refreshToken);
       } else {
-        throw new SessionExpiredException();
+        throw new AppException(
+          StatusCodeEnum.UNAUTHORIZED,
+          'Session has expired or is invalid',
+          { error: error instanceof Error ? error.message : String(error) },
+        );
       }
     }
   }
@@ -99,14 +104,20 @@ export class AuthGuard implements CanActivate {
       refreshToken === 'null' ||
       refreshToken === 'undefined'
     ) {
-      throw new SessionExpiredException();
+      throw new AppException(
+        StatusCodeEnum.UNAUTHORIZED,
+        'Session has expired or is invalid',
+      );
     }
 
     try {
       const refreshPayload = await this.verifyToken(refreshToken, 'refresh');
 
       if (!refreshPayload) {
-        throw new SessionExpiredException();
+        throw new AppException(
+          StatusCodeEnum.UNAUTHORIZED,
+          'Session has expired or is invalid',
+        );
       }
 
       const newAccessToken = await this.jwtService.createAccessToken({

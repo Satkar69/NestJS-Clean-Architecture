@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { Observable, tap } from 'rxjs';
-import { AppResponse } from 'src/shared/interface/response/app-response';
+import { AppResponse } from '@/src/shared/interface/response/app-response';
 
 @Injectable()
 export class HttpLoggingInterceptor implements NestInterceptor {

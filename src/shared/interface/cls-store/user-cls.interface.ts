@@ -1,5 +1,4 @@
-import { UserRoleEnum } from 'src/core/domain/enums/user.enum';
-
+import { UserRoleEnum } from '@/src/core/domain/enums/user.enum';
 export interface UserClsStore {
   id: string;
   firstName: string;
