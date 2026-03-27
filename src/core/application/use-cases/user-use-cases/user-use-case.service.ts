@@ -11,7 +11,7 @@ import {
 import { IUserUseCaseService } from '../../ports/in/user-service.abstract';
 import { Response } from 'express';
 import { AppException } from '@/src/shared/exceptions';
-import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 import { UserUseCaseHelper } from './user-use-case.helper';
 import { UserModel } from '@/src/core/domain/model/user.model';
 

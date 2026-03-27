@@ -8,7 +8,7 @@ import {
 } from '@/src/core/application/ports/out/services/jwt.abstract';
 import { AppException } from '@/src/shared/exceptions';
 import { TokenType } from '@/src/shared/type/token-type';
-import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 
 @Injectable()
 export class JwtTokenService implements IJwtService {

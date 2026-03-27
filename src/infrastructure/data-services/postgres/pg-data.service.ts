@@ -9,7 +9,7 @@ import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.inte
 import { IGenericRepository } from '@/src/core/application/ports/out/data-services/generic-repository.abstract';
 import { UserModel } from '@/src/core/domain/model/user.model';
 import { AppException } from '@/src/shared/exceptions';
-import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 
 @Injectable()
 export class PgDataService implements IDataServices, OnApplicationBootstrap {

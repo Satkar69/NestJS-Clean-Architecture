@@ -3,7 +3,7 @@ import { AppException } from '@/src/shared/exceptions';
 import { createPgDataSource } from '../pg-data-source';
 import InjectableString from '@/src/shared/constants/injectable-string';
 import { ConfigService } from '@nestjs/config';
-import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 
 export const pgDatabaseProvider = [
   {

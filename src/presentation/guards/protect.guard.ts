@@ -4,7 +4,7 @@ import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.inte
 import { IDataServices } from '@/src/core/application/ports/out/data-services/data-services.abstract';
 import { AppException } from '@/src/shared/exceptions';
 import { IJwtPayload } from '@/src/core/application/ports/out/services/jwt.abstract';
-import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 
 @Injectable()
 export class ProtectGuard implements CanActivate {

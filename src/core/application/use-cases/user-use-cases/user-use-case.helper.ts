@@ -3,7 +3,7 @@ import { IDataServices } from '../../ports/out/data-services/data-services.abstr
 import { IBcryptService } from '../../ports/out/services/bcrypt.abstract';
 import { IJwtService } from '../../ports/out/services/jwt.abstract';
 import { AppException } from '@/src/shared/exceptions';
-import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 import { Response } from 'express';
 import { UserModel } from '@/src/core/domain/model/user.model';
 import { UserRoleEnum } from '@/src/core/domain/enums/user.enum';

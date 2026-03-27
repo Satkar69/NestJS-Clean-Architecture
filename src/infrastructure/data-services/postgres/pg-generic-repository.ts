@@ -8,7 +8,7 @@ import {
 } from '@/src/core/application/ports/out/data-services/generic-repository.abstract';
 import { Repository, EntityManager, ObjectLiteral } from 'typeorm';
 import { AppException } from '@/src/shared/exceptions';
-import { StatusCodeEnum } from '@/src/shared/enums/http-codes.enum';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 export class PgGenericRepository<
   T extends ObjectLiteral,
 > implements IGenericRepository<T> {
