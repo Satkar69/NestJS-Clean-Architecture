@@ -12,7 +12,7 @@ export class GoogleStrategyService
   implements IGoogleStrategy
 {
   constructor(
-    private configService: ConfigService,
+    configService: ConfigService,
     private userService: UserUseCaseService,
   ) {
     super({
