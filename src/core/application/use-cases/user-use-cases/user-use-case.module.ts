@@ -10,4 +10,4 @@ import { UserUseCaseHelper } from './user-use-case.helper';
   providers: [UserUseCaseService, UserUseCaseFactory, UserUseCaseHelper],
   exports: [UserUseCaseService],
 })
-export class UserUseCaseServiceModule {}
+export class UserUseCaseModule {}

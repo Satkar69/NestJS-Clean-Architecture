@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IDataServices } from '../../ports/out/data-services/data-services.abstract';
 import { IBcryptService } from '../../ports/out/services/bcrypt.abstract';
-import { IJwtService } from '../../ports/out/services/jwt.abstract';
 import { UserUseCaseFactory } from './user-use-case-factory';
 import {
   LoginUserDto,
@@ -14,6 +13,7 @@ import { AppException } from '@/src/shared/exceptions';
 import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 import { UserUseCaseHelper } from './user-use-case.helper';
 import { UserModel } from '@/src/core/domain/model/user.model';
+import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 
 @Injectable()
 export class UserUseCaseService implements IUserUseCaseService {
@@ -21,7 +21,6 @@ export class UserUseCaseService implements IUserUseCaseService {
     private dataServices: IDataServices,
     private userFactory: UserUseCaseFactory,
     private bcryptService: IBcryptService,
-    private jwtService: IJwtService,
     private userUseCaseHelper: UserUseCaseHelper,
   ) {}
 
@@ -68,21 +67,13 @@ export class UserUseCaseService implements IUserUseCaseService {
     const tokens = await this.userUseCaseHelper.generateAccessAndRefreshTokens(
       existingUser.user.id,
       existingUser.user.userRole,
-      res,
     );
 
-    res.cookie('access_token', tokens.accessToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: this.jwtService.accessTokenExpiresIn * 1000,
-      sameSite: 'none',
-    });
-    res.cookie('refresh_token', tokens.refreshToken, {
-      httpOnly: true,
-      secure: true,
-      maxAge: this.jwtService.refreshTokenExpiresIn * 1000,
-      sameSite: 'none',
-    });
+    await this.userUseCaseHelper.setTokensInResponseCookies(
+      tokens.accessToken,
+      tokens.refreshToken,
+      res,
+    );
   }
 
   async loginGoogleUser(userEmail: string, res: Response) {
@@ -94,14 +85,19 @@ export class UserUseCaseService implements IUserUseCaseService {
         `user with email "${userEmail}" does not exists.`,
       );
     }
-    await this.userUseCaseHelper.generateAccessAndRefreshTokens(
+    const tokens = await this.userUseCaseHelper.generateAccessAndRefreshTokens(
       existingUser.user.id,
       existingUser.user.userRole,
+    );
+
+    await this.userUseCaseHelper.setTokensInResponseCookies(
+      tokens.accessToken,
+      tokens.refreshToken,
       res,
     );
   }
 
-  async validateOauthUser(dto: RegisterOauthUserDto): Promise<UserModel> {
+  async validateOauthUser(dto: RegisterOauthUserDto): Promise<UserClsStore> {
     if (!dto) {
       throw new AppException(
         StatusCodeEnum.BAD_REQUEST,
@@ -115,19 +111,28 @@ export class UserUseCaseService implements IUserUseCaseService {
       const newUser = this.userFactory.registerOauthUser(dto);
       return await this.dataServices.user.create(newUser);
     }
-    return existingUser.user!;
+    return {
+      id: existingUser.user!.id,
+      firstName: existingUser.user!.firstName,
+      middleName: existingUser.user!.middleName
+        ? existingUser.user!.middleName
+        : undefined,
+      lastName: existingUser.user!.lastName,
+      email: existingUser.user!.email,
+      userRole: existingUser.user!.userRole,
+    };
   }
 
   async logoutUser(res: Response) {
     res.clearCookie('access_token', {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'strict',
     });
     res.clearCookie('refresh_token', {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
+      sameSite: 'strict',
     });
     return;
   }

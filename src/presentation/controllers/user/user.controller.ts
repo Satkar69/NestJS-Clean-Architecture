@@ -18,6 +18,7 @@ import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.a
 import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 import { GoogleOauthGuard } from '@/src/presentation/guards/google-Oauth.guard';
+import type { Request, Response } from 'express';
 @Controller()
 export class UserController {
   constructor(
@@ -51,16 +52,16 @@ export class UserController {
   @ApiOperation({ summary: ' Google OAuth login' })
   @UseGuards(GoogleOauthGuard)
   @Get('google/login')
-  googleLogin(@Req() req: any, @Res() res: any) {}
+  googleLogin(@Req() req: Request, @Res() res: Response) {}
 
   @ApiOperation({ summary: ' Google OAuth callback' })
   @Get('/google/login/callback')
   @UseGuards(GoogleOauthGuard)
   async googleLoginCallback(
-    @Req() req: any,
-    @Res({ passthrough: true }) res: any,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    await this.userService.loginGoogleUser(req.user?.email, res);
+    await this.userService.loginGoogleUser(req.user!.email, res);
     return res.redirect('http://localhost:5000/api/v1/user/me');
   }
 
@@ -72,7 +73,7 @@ export class UserController {
 
   @ApiOperation({ summary: 'Logout a user' })
   @Post('/logout')
-  async logoutUser(@Res({ passthrough: true }) res: any) {
+  async logoutUser(@Res({ passthrough: true }) res: Response) {
     return CoreApiResponse.success(
       await this.userService.logoutUser(res),
       200,
