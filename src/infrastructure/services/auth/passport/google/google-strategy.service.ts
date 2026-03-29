@@ -4,7 +4,7 @@ import { IGoogleStrategy } from '@/src/core/application/ports/out/services/googl
 import { Strategy, VerifyCallback } from 'passport-google-oauth2';
 import { PassportStrategy } from '@nestjs/passport';
 import { RegisterOauthUserDto } from '@/src/core/application/dto/request/user.dto';
-import { UserUseCaseService } from '@/src/core/application/use-cases/user-use-cases/user-use-case.service';
+import { UserUseCaseService } from '@/src/core/application/use-cases/user/user-use-case.service';
 
 @Injectable()
 export class GoogleStrategyService
@@ -23,7 +23,12 @@ export class GoogleStrategyService
     });
   }
 
-  async validate(profile: any, done: VerifyCallback): Promise<any> {
+  async validate(
+    _accessToken: string,
+    _refreshToken: string,
+    profile: any,
+    done: VerifyCallback,
+  ): Promise<any> {
     const { id, name, emails } = profile;
 
     const user: RegisterOauthUserDto = {
@@ -35,7 +40,6 @@ export class GoogleStrategyService
     };
 
     const userData = await this.userService.validateOauthUser(user);
-
     done(null, userData);
   }
 }

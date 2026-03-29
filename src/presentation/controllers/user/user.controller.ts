@@ -12,7 +12,7 @@ import {
   LoginUserDto,
   RegisterUserDto,
 } from '@/src/core/application/dto/request/user.dto';
-import { UserUseCaseService } from '@/src/core/application/use-cases/user-use-cases/user-use-case.service';
+import { UserUseCaseService } from '@/src/core/application/use-cases/user/user-use-case.service';
 import { CoreApiResponse } from '@/src/presentation/api/core/core-api.response';
 import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
@@ -52,7 +52,7 @@ export class UserController {
   @ApiOperation({ summary: ' Google OAuth login' })
   @UseGuards(GoogleOauthGuard)
   @Get('google/login')
-  googleLogin(@Req() req: Request, @Res() res: Response) {}
+  googleLogin() {}
 
   @ApiOperation({ summary: ' Google OAuth callback' })
   @Get('/google/login/callback')

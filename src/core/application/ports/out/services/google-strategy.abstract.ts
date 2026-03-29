@@ -1,3 +1,8 @@
 export abstract class IGoogleStrategy {
-  abstract validate(profile: any, done: Function): Promise<void>;
+  abstract validate(
+    accessToken: string,
+    refreshToken: string,
+    profile: any,
+    done: Function,
+  ): Promise<void>;
 }
