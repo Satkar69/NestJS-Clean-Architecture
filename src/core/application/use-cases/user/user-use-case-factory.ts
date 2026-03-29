@@ -9,11 +9,11 @@ import {
 export class UserUseCaseFactory {
   registerUser(dto: RegisterUserDto) {
     const user = new UserModel();
-    if (dto.firstName) user.firstName = dto.firstName;
+    user.firstName = dto.firstName;
     if (dto.middleName) user.middleName = dto.middleName;
-    if (dto.lastName) user.lastName = dto.lastName;
-    if (dto.email) user.email = dto.email;
-    if (dto.password) user.password = dto.password;
+    user.lastName = dto.lastName;
+    user.email = dto.email;
+    user.password = dto.password;
     if (dto.userRole) user.userRole = dto.userRole;
     if (dto.isActive !== undefined) user.isActive = dto.isActive;
     return user;
@@ -21,11 +21,11 @@ export class UserUseCaseFactory {
   registerOauthUser(dto: RegisterOauthUserDto) {
     const user = new UserModel();
     user.isOauthUser = true;
-    if (dto.oauthProvider) user.oauthProvider = dto.oauthProvider;
-    if (dto.oauthProviderId) user.oauthProviderId = dto.oauthProviderId;
-    if (dto.firstName) user.firstName = dto.firstName;
-    if (dto.lastName) user.lastName = dto.lastName;
-    if (dto.email) user.email = dto.email;
+    user.oauthProvider = dto.oauthProvider;
+    user.oauthProviderId = dto.oauthProviderId;
+    user.firstName = dto.firstName;
+    user.lastName = dto.lastName;
+    user.email = dto.email;
     return user;
   }
 }
