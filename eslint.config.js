@@ -32,4 +32,12 @@ module.exports = tseslint.config(
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
     },
   },
+  {
+    parserOptions: {
+      projectService: {
+        allowDefaultProject: ['commitlint.config.js', 'eslint.config.js'],
+      },
+      tsconfigRootDir: __dirname,
+    },
+  },
 );
