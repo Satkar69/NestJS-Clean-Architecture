@@ -12,5 +12,5 @@ export abstract class IUserUseCaseService {
   abstract loginUser(dto: LoginUserDto, res: Response): Promise<void>;
   abstract loginGoogleUser(userEmail: string, res: Response): Promise<void>;
   abstract validateOauthUser(dto: RegisterOauthUserDto): Promise<UserClsStore>;
-  abstract logoutUser(res: Response): Promise<void>;
+  abstract logoutUser(res: Response): void;
 }

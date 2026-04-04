@@ -62,9 +62,9 @@ export class AuthController {
 
   @ApiOperation({ summary: 'Logout a user' })
   @Post('/logout')
-  async logoutUser(@Res({ passthrough: true }) res: Response) {
+  logoutUser(@Res({ passthrough: true }) res: Response) {
     return CoreApiResponse.success(
-      await this.authService.logoutUser(res),
+      this.authService.logoutUser(res),
       StatusCodeEnum.OK,
       'user logged out successfully',
     );

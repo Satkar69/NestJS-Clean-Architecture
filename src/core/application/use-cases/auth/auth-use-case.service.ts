@@ -124,7 +124,7 @@ export class AuthUseCaseService implements IUserUseCaseService {
     };
   }
 
-  async logoutUser(res: Response) {
+  logoutUser(res: Response) {
     res.clearCookie('access_token', {
       httpOnly: true,
       secure: true,
