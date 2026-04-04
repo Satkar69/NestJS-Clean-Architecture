@@ -26,8 +26,3 @@ export interface AppErrorResponse extends BaseErrorResponse {
 export interface ValidationErrorResponse extends BaseErrorResponse {
   errors: ValidationErrorInterface[];
 }
-
-export interface DevDetails {
-  stack?: string;
-  context?: Record<string, any>;
-}
