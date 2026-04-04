@@ -45,7 +45,7 @@ export class ProtectGuard implements CanActivate {
     });
   }
 
-  private async getUserFromPayload(userId: string) {
+  private async getUserFromPayload(userId: number) {
     const user = await this.dataServices.user.getOneOrNull({ id: userId });
     if (!user) {
       throw new AppException(

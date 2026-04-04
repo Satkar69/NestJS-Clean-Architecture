@@ -18,7 +18,7 @@ export class AuthUseCaseHelper {
     return await this.bcryptService.compare(plainPassword, hashedPassword);
   }
 
-  async generateAccessAndRefreshTokens(sub: string, role: UserRoleEnum) {
+  async generateAccessAndRefreshTokens(sub: number, role: UserRoleEnum) {
     const tokenPayload = {
       sub: sub,
       role: role,

@@ -2,7 +2,7 @@ import { TokenType } from '@/src/shared/type/token-type';
 import { UserRoleEnum } from '@/src/core/domain/enums/user.enum';
 
 export interface IJwtPayload {
-  sub: string;
+  sub: number;
   role: UserRoleEnum;
   iat?: number;
   exp?: number;
