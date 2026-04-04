@@ -13,19 +13,13 @@ import {
   RegisterUserDto,
 } from '@/src/core/application/dto/request/user.dto';
 import { CoreApiResponse } from '@/src/presentation/api/core/core-api.response';
-import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
-import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
-import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 import { GoogleOauthGuard } from '@/src/presentation/guards/google-Oauth.guard';
 import type { Request, Response } from 'express';
 import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 import { AuthUseCaseService } from '@/src/core/application/use-cases/auth/auth-use-case.service';
 @Controller()
 export class AuthController {
-  constructor(
-    private cls: IClsStore<AppClsStore>,
-    private authService: AuthUseCaseService,
-  ) {}
+  constructor(private authService: AuthUseCaseService) {}
 
   @ApiOperation({ summary: 'Register a new user' })
   @Post('/register')
@@ -64,12 +58,6 @@ export class AuthController {
   ) {
     await this.authService.loginGoogleUser(req.user!.email, res);
     return res.redirect('http://localhost:5000/api/v1/user/me');
-  }
-
-  @ApiOperation({ summary: 'Get current logged in user' })
-  @Get('/me')
-  async me() {
-    return CoreApiResponse.success(this.cls.get<UserClsStore>('user'));
   }
 
   @ApiOperation({ summary: 'Logout a user' })

@@ -1,5 +1,6 @@
 import { Routes } from '@nestjs/core';
 import { AuthControllerModule } from './auth/auth-controller.module';
+import { UserControllerModule } from './user/user-controller.module';
 
 const routes: Routes = [
   {
@@ -8,6 +9,10 @@ const routes: Routes = [
       {
         path: '/auth',
         children: [AuthControllerModule],
+      },
+      {
+        path: '/user',
+        children: [UserControllerModule],
       },
     ],
   },

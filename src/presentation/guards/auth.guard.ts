@@ -40,12 +40,7 @@ export class AuthGuard implements CanActivate {
     return this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
-    ]) ||
-      url.startsWith('/api/v1/user/register') ||
-      url.startsWith('/api/v1/user/login') ||
-      url.startsWith('/api/v1/user/logout') ||
-      url.startsWith('/api/v1/user/google/login') ||
-      url.startsWith('/api/v1/user/google/login/callback')
+    ]) || url.startsWith('/api/v1/auth')
       ? true
       : false;
   }
@@ -88,7 +83,7 @@ export class AuthGuard implements CanActivate {
       } else {
         throw new AppException(
           StatusCodeEnum.UNAUTHORIZED,
-          'Session has expired or is invalid',
+          'Session has expired or is invalid, Please Login',
           undefined,
           { service: 'AuthGuard', operation: 'authenticateUser' },
         );
@@ -107,7 +102,7 @@ export class AuthGuard implements CanActivate {
     ) {
       throw new AppException(
         StatusCodeEnum.UNAUTHORIZED,
-        'Session has expired or is invalid',
+        'Session has expired or is invalid, Please Login',
       );
     }
 
@@ -117,7 +112,7 @@ export class AuthGuard implements CanActivate {
       if (!refreshPayload) {
         throw new AppException(
           StatusCodeEnum.UNAUTHORIZED,
-          'Session has expired or is invalid',
+          'Session has expired or is invalid, Please Login',
         );
       }
 
