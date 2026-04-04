@@ -40,7 +40,7 @@ export class UserController {
   @Post('/login')
   async loginUser(
     @Body() dto: LoginUserDto,
-    @Res({ passthrough: true }) res: any,
+    @Res({ passthrough: true }) res: Response,
   ) {
     return CoreApiResponse.success(
       await this.userService.loginUser(dto, res),
