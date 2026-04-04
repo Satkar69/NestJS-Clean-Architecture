@@ -1,11 +1,16 @@
-const eslint = require('@eslint/js');
-const tseslint = require('typescript-eslint');
-const eslintPluginPrettier = require('eslint-plugin-prettier/recommended');
-const globals = require('globals');
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import eslintPluginPrettier from 'eslint-plugin-prettier/recommended';
+import globals from 'globals';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
-module.exports = tseslint.config(
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+export default tseslint.config(
   {
-    ignores: ['eslint.config.js'],
+    ignores: ['eslint.config.mjs'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -16,10 +21,10 @@ module.exports = tseslint.config(
         ...globals.node,
         ...globals.jest,
       },
-      sourceType: 'commonjs',
+      sourceType: 'module',
       parserOptions: {
         projectService: true,
-        tsconfigRootDir: __dirname, // replace import.meta.dirname
+        tsconfigRootDir: __dirname,
       },
     },
   },
@@ -33,11 +38,13 @@ module.exports = tseslint.config(
     },
   },
   {
-    parserOptions: {
-      projectService: {
-        allowDefaultProject: ['commitlint.config.js', 'eslint.config.js'],
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ['commitlint.config.js', 'eslint.config.mjs'],
+        },
+        tsconfigRootDir: __dirname,
       },
-      tsconfigRootDir: __dirname,
     },
   },
 );
