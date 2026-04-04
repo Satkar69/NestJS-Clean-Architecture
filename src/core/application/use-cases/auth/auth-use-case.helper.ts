@@ -33,7 +33,7 @@ export class AuthUseCaseHelper {
     };
   }
 
-  async setTokensInResponseCookies(
+  setTokensInResponseCookies(
     accessToken: string,
     refreshToken: string,
     res: Response,

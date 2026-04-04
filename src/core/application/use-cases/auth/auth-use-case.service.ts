@@ -70,7 +70,7 @@ export class AuthUseCaseService implements IUserUseCaseService {
       existingUser.user.userRole,
     );
 
-    await this.authUseCaseHelper.setTokensInResponseCookies(
+    this.authUseCaseHelper.setTokensInResponseCookies(
       tokens.accessToken,
       tokens.refreshToken,
       res,
@@ -91,7 +91,7 @@ export class AuthUseCaseService implements IUserUseCaseService {
       existingUser.user.userRole,
     );
 
-    await this.authUseCaseHelper.setTokensInResponseCookies(
+    this.authUseCaseHelper.setTokensInResponseCookies(
       tokens.accessToken,
       tokens.refreshToken,
       res,
