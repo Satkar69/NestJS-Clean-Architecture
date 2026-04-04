@@ -9,6 +9,7 @@ import {
 import { Repository, EntityManager, ObjectLiteral } from 'typeorm';
 import { AppException } from '@/src/shared/exceptions';
 import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
+
 export class PgGenericRepository<
   T extends ObjectLiteral,
 > implements IGenericRepository<T> {

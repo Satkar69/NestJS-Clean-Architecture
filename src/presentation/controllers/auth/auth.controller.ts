@@ -12,7 +12,6 @@ import {
   LoginUserDto,
   RegisterUserDto,
 } from '@/src/core/application/dto/request/user.dto';
-import { UserUseCaseService } from '@/src/core/application/use-cases/user/user-use-case.service';
 import { CoreApiResponse } from '@/src/presentation/api/core/core-api.response';
 import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
@@ -20,18 +19,19 @@ import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interfac
 import { GoogleOauthGuard } from '@/src/presentation/guards/google-Oauth.guard';
 import type { Request, Response } from 'express';
 import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
+import { AuthUseCaseService } from '@/src/core/application/use-cases/auth/auth-use-case.service';
 @Controller()
-export class UserController {
+export class AuthController {
   constructor(
     private cls: IClsStore<AppClsStore>,
-    private userService: UserUseCaseService,
+    private authService: AuthUseCaseService,
   ) {}
 
   @ApiOperation({ summary: 'Register a new user' })
   @Post('/register')
   async registerUser(@Body() dto: RegisterUserDto) {
     return CoreApiResponse.success(
-      await this.userService.registerUser(dto),
+      await this.authService.registerUser(dto),
       StatusCodeEnum.CREATED,
       'user registered successfully',
     );
@@ -44,7 +44,7 @@ export class UserController {
     @Res({ passthrough: true }) res: Response,
   ) {
     return CoreApiResponse.success(
-      await this.userService.loginUser(dto, res),
+      await this.authService.loginUser(dto, res),
       StatusCodeEnum.OK,
       'user logged in successfully',
     );
@@ -62,7 +62,7 @@ export class UserController {
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
-    await this.userService.loginGoogleUser(req.user!.email, res);
+    await this.authService.loginGoogleUser(req.user!.email, res);
     return res.redirect('http://localhost:5000/api/v1/user/me');
   }
 
@@ -76,7 +76,7 @@ export class UserController {
   @Post('/logout')
   async logoutUser(@Res({ passthrough: true }) res: Response) {
     return CoreApiResponse.success(
-      await this.userService.logoutUser(res),
+      await this.authService.logoutUser(res),
       StatusCodeEnum.OK,
       'user logged out successfully',
     );

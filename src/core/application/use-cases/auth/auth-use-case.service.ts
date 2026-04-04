@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { IDataServices } from '../../ports/out/data-services/data-services.abstract';
 import { IBcryptService } from '../../ports/out/services/bcrypt.abstract';
-import { UserUseCaseFactory } from './user-use-case-factory';
+import { AuthUseCaseFactory } from './auth-use-case-factory';
 import {
   LoginUserDto,
   RegisterOauthUserDto,
@@ -11,16 +11,18 @@ import { IUserUseCaseService } from '../../ports/in/user-use-case-service.abstra
 import { Response } from 'express';
 import { AppException } from '@/src/shared/exceptions';
 import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
-import { UserUseCaseHelper } from './user-use-case.helper';
+import { AuthUseCaseHelper } from './auth-use-case.helper';
+import { UserUseCaseHelper } from '../user/user-use-case.helper';
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 
 @Injectable()
-export class UserUseCaseService implements IUserUseCaseService {
+export class AuthUseCaseService implements IUserUseCaseService {
   constructor(
     private dataServices: IDataServices,
-    private userFactory: UserUseCaseFactory,
+    private authFactory: AuthUseCaseFactory,
     private bcryptService: IBcryptService,
     private userUseCaseHelper: UserUseCaseHelper,
+    private authUseCaseHelper: AuthUseCaseHelper,
   ) {}
 
   async registerUser(dto: RegisterUserDto) {
@@ -34,7 +36,7 @@ export class UserUseCaseService implements IUserUseCaseService {
       );
     }
     const hashedPassword = await this.bcryptService.hash(dto.password);
-    const user = this.userFactory.registerUser({
+    const user = this.authFactory.registerUser({
       ...dto,
       password: hashedPassword,
     });
@@ -52,7 +54,7 @@ export class UserUseCaseService implements IUserUseCaseService {
         `user with email "${dto.email}" does not exists.`,
       );
     }
-    const isPasswordValid = await this.userUseCaseHelper.checkPasswordMatch(
+    const isPasswordValid = await this.authUseCaseHelper.checkPasswordMatch(
       dto.password,
       existingUser.user.password ?? '',
     );
@@ -63,12 +65,12 @@ export class UserUseCaseService implements IUserUseCaseService {
         'Invalid credentials provided',
       );
     }
-    const tokens = await this.userUseCaseHelper.generateAccessAndRefreshTokens(
+    const tokens = await this.authUseCaseHelper.generateAccessAndRefreshTokens(
       existingUser.user.id,
       existingUser.user.userRole,
     );
 
-    await this.userUseCaseHelper.setTokensInResponseCookies(
+    await this.authUseCaseHelper.setTokensInResponseCookies(
       tokens.accessToken,
       tokens.refreshToken,
       res,
@@ -84,12 +86,12 @@ export class UserUseCaseService implements IUserUseCaseService {
         `user with email "${userEmail}" does not exists.`,
       );
     }
-    const tokens = await this.userUseCaseHelper.generateAccessAndRefreshTokens(
+    const tokens = await this.authUseCaseHelper.generateAccessAndRefreshTokens(
       existingUser.user.id,
       existingUser.user.userRole,
     );
 
-    await this.userUseCaseHelper.setTokensInResponseCookies(
+    await this.authUseCaseHelper.setTokensInResponseCookies(
       tokens.accessToken,
       tokens.refreshToken,
       res,
@@ -107,7 +109,7 @@ export class UserUseCaseService implements IUserUseCaseService {
       dto.email,
     );
     if (!existingUser.exists) {
-      const newUser = this.userFactory.registerOauthUser(dto);
+      const newUser = this.authFactory.registerOauthUser(dto);
       return await this.dataServices.user.create(newUser);
     }
     return {

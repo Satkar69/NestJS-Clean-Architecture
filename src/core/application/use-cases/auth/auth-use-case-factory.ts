@@ -6,7 +6,7 @@ import {
 } from '../../dto/request/user.dto';
 
 @Injectable()
-export class UserUseCaseFactory {
+export class AuthUseCaseFactory {
   registerUser(dto: RegisterUserDto) {
     const user = new UserModel();
     user.firstName = dto.firstName;

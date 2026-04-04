@@ -1,13 +1,13 @@
 import { Routes } from '@nestjs/core';
-import { UserControllerModule } from './user/user-controller.module';
+import { AuthControllerModule } from './auth/auth-controller.module';
 
 const routes: Routes = [
   {
     path: '/v1',
     children: [
       {
-        path: '/user',
-        children: [UserControllerModule],
+        path: '/auth',
+        children: [AuthControllerModule],
       },
     ],
   },

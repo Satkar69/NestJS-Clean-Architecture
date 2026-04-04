@@ -1,18 +1,24 @@
 import { Module } from '@nestjs/common';
-import { UserUseCaseService } from '@/src/core/application/use-cases/user/user-use-case.service';
 import { GoogleStrategyService } from './google/google-strategy.service';
 import { BcryptServiceModule } from '../../bcrypt/bcrypt.module';
 import { DataServicesModule } from '@/src/infrastructure/data-services/data-services.module';
-import { UserUseCaseFactory } from '@/src/core/application/use-cases/user/user-use-case-factory';
-import { UserUseCaseHelper } from '@/src/core/application/use-cases/user/user-use-case.helper';
+import { AuthUseCaseFactory } from '@/src/core/application/use-cases/auth/auth-use-case-factory';
 import { JwtTokenModule } from '../jwt-token/jwt-token.module';
+import { AuthUseCaseService } from '@/src/core/application/use-cases/auth/auth-use-case.service';
+import { AuthUseCaseHelper } from '@/src/core/application/use-cases/auth/auth-use-case.helper';
+import { UserUseCaseModule } from '@/src/core/application/use-cases/user/user-use-case.module';
 
 @Module({
-  imports: [BcryptServiceModule, DataServicesModule, JwtTokenModule],
+  imports: [
+    BcryptServiceModule,
+    DataServicesModule,
+    JwtTokenModule,
+    UserUseCaseModule,
+  ],
   providers: [
-    UserUseCaseFactory,
-    UserUseCaseHelper,
-    UserUseCaseService,
+    AuthUseCaseHelper,
+    AuthUseCaseFactory,
+    AuthUseCaseService,
     GoogleStrategyService,
   ],
   exports: [GoogleStrategyService],
