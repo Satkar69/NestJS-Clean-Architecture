@@ -91,7 +91,10 @@ export class PgGenericRepository<
       ...options,
     });
     if (!item) {
-      const entityName = this._repository.metadata.name;
+      const entityName = this._repository.metadata.targetName.replace(
+        '/Entity$/',
+        '',
+      );
       throw new AppException(
         StatusCodeEnum.NOT_FOUND,
         `${entityName} not found`,
