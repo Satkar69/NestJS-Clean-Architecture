@@ -32,7 +32,7 @@ export class AuthUseCaseService implements IUserUseCaseService {
     if (existingUser.exists) {
       throw new AppException(
         StatusCodeEnum.CONFLICT,
-        'User with this email already exists',
+        `User with email '${dto.email}' already exists`,
       );
     }
     const hashedPassword = await this.bcryptService.hash(dto.password);
@@ -51,7 +51,7 @@ export class AuthUseCaseService implements IUserUseCaseService {
     if (!existingUser.exists || !existingUser.user) {
       throw new AppException(
         StatusCodeEnum.UNAUTHORIZED,
-        `user with email "${dto.email}" does not exists.`,
+        `user with email '${dto.email}' does not exists.`,
       );
     }
     const isPasswordValid = await this.authUseCaseHelper.checkPasswordMatch(
@@ -83,7 +83,7 @@ export class AuthUseCaseService implements IUserUseCaseService {
     if (!existingUser.exists || !existingUser.user) {
       throw new AppException(
         StatusCodeEnum.NOT_FOUND,
-        `user with email "${userEmail}" does not exists.`,
+        `user with email '${userEmail}' does not exists.`,
       );
     }
     const tokens = await this.authUseCaseHelper.generateAccessAndRefreshTokens(
