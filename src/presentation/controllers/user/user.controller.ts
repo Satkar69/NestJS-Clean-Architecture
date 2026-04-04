@@ -19,6 +19,7 @@ import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.inte
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 import { GoogleOauthGuard } from '@/src/presentation/guards/google-Oauth.guard';
 import type { Request, Response } from 'express';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 @Controller()
 export class UserController {
   constructor(
@@ -31,7 +32,7 @@ export class UserController {
   async registerUser(@Body() dto: RegisterUserDto) {
     return CoreApiResponse.success(
       await this.userService.registerUser(dto),
-      201,
+      StatusCodeEnum.CREATED,
       'user registered successfully',
     );
   }
@@ -44,7 +45,7 @@ export class UserController {
   ) {
     return CoreApiResponse.success(
       await this.userService.loginUser(dto, res),
-      200,
+      StatusCodeEnum.OK,
       'user logged in successfully',
     );
   }
@@ -76,7 +77,7 @@ export class UserController {
   async logoutUser(@Res({ passthrough: true }) res: Response) {
     return CoreApiResponse.success(
       await this.userService.logoutUser(res),
-      200,
+      StatusCodeEnum.OK,
       'user logged out successfully',
     );
   }
