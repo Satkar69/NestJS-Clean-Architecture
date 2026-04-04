@@ -8,7 +8,7 @@ export class AppException extends HttpException {
     statusCode: number,
     message: string,
     errors?: FieldErrorInterface | FieldErrorInterface[],
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
   ) {
     super(statusCode, message, context);
     this.errors = errors;

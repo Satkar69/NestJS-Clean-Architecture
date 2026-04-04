@@ -2,7 +2,10 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { IClsStore } from '@/src/core/application/ports/out/services/cls-store.abstract';
 import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.interface';
-import { IJwtService } from '@/src/core/application/ports/out/services/jwt.abstract';
+import {
+  IJwtPayload,
+  IJwtService,
+} from '@/src/core/application/ports/out/services/jwt.abstract';
 import { IS_PUBLIC_KEY } from '@/src/shared/decorators/public.decorator';
 import { Request, Response } from 'express';
 import { AppException } from '@/src/shared/exceptions';
@@ -74,10 +77,11 @@ export class AuthGuard implements CanActivate {
       }
 
       await this.refreshAccessToken(response, refreshToken);
-    } catch (error: Error | any) {
+    } catch (error) {
       if (
-        error.name === 'TokenExpiredError' ||
-        error.name === 'JsonWebTokenError'
+        error instanceof Error &&
+        (error.name === 'TokenExpiredError' ||
+          error.name === 'JsonWebTokenError')
       ) {
         await this.refreshAccessToken(response, refreshToken);
       } else {
@@ -102,43 +106,39 @@ export class AuthGuard implements CanActivate {
     ) {
       throw new AppException(
         StatusCodeEnum.UNAUTHORIZED,
-        'Session has expired or is invalid, Please Login',
+        'Session has expired, Please Login',
       );
     }
 
-    try {
-      const refreshPayload = await this.verifyToken(refreshToken, 'refresh');
+    const refreshPayload = await this.verifyToken(refreshToken, 'refresh');
 
-      if (!refreshPayload) {
-        throw new AppException(
-          StatusCodeEnum.UNAUTHORIZED,
-          'Session has expired or is invalid, Please Login',
-        );
-      }
-
-      const newAccessToken = await this.jwtService.createAccessToken({
-        sub: refreshPayload.sub,
-        role: refreshPayload.role,
-      });
-
-      response.cookie('access_token', newAccessToken, {
-        httpOnly: true,
-        secure: true,
-        maxAge: this.jwtService.accessTokenExpiresIn * 1000,
-        sameSite: 'none',
-      });
-
-      const newPayload = await this.verifyToken(newAccessToken, 'access');
-      this.cls.set('tokenPayload', newPayload);
-    } catch (error) {
-      return;
+    if (!refreshPayload) {
+      throw new AppException(
+        StatusCodeEnum.UNAUTHORIZED,
+        'Session has expired, Please Login',
+      );
     }
+
+    const newAccessToken = await this.jwtService.createAccessToken({
+      sub: refreshPayload.sub,
+      role: refreshPayload.role,
+    });
+
+    response.cookie('access_token', newAccessToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: this.jwtService.accessTokenExpiresIn * 1000,
+      sameSite: 'none',
+    });
+
+    const newPayload = await this.verifyToken(newAccessToken, 'access');
+    this.cls.set('tokenPayload', newPayload);
   }
 
   private async verifyToken(
     token: string,
     tokenType: TokenType,
-  ): Promise<any | null> {
+  ): Promise<IJwtPayload | null> {
     try {
       const decoded = await this.jwtService.checkToken(token.trim(), tokenType);
       return decoded;

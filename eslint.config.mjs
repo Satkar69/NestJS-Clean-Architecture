@@ -8,12 +8,12 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export default tseslint(
+export default tseslint.config(
   {
-    ignores: ['eslint.config.js'],
+    ignores: ['eslint.config.mjs'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.recommendedTypeChecked,
   eslintPluginPrettier,
   {
     languageOptions: {
@@ -23,7 +23,9 @@ export default tseslint(
       },
       sourceType: 'module',
       parserOptions: {
-        projectService: true,
+        projectService: {
+          allowDefaultProject: ['commitlint.config.js', 'eslint.config.mjs'],
+        },
         tsconfigRootDir: __dirname,
       },
     },
@@ -34,17 +36,10 @@ export default tseslint(
       '@typescript-eslint/no-floating-promises': 'warn',
       '@typescript-eslint/no-unsafe-argument': 'warn',
       '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
-    },
-  },
-  {
-    languageOptions: {
-      parserOptions: {
-        projectService: {
-          allowDefaultProject: ['commitlint.config.js', 'eslint.config.js'],
-        },
-        tsconfigRootDir: __dirname,
-      },
     },
   },
 );

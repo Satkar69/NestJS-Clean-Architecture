@@ -19,7 +19,10 @@ export abstract class IJwtService {
   readonly refreshTokenSecret: string;
   readonly refreshTokenExpiresIn: number;
 
-  abstract checkToken<T>(token: string, tokenType: TokenType): Promise<T>;
+  abstract checkToken(
+    token: string,
+    tokenType: TokenType,
+  ): Promise<IJwtPayload>;
   abstract createAccessToken(payload: IJwtPayload): Promise<string>;
   abstract createRefreshToken(payload: IJwtPayload): Promise<string>;
   abstract createResetPasswordToken(
