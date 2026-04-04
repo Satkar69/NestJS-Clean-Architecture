@@ -194,7 +194,7 @@ export class PgGenericRepository<
 
   async updateBulk(
     condition: NonNullable<unknown> | any[],
-    item: any,
+    item: T,
     manager?: EntityManager,
   ): Promise<T[]> {
     const repository = this.getRepository(manager);

@@ -6,7 +6,7 @@ import {
   LoginUserDto,
   RegisterOauthUserDto,
   RegisterUserDto,
-} from '../../dto/request/user.dto';
+} from '../../dto/request/auth.dto';
 import { IAuthService } from '../../ports/in/auth.service.abstract';
 import { Response } from 'express';
 import { AppException } from '@/src/shared/exceptions';

@@ -11,7 +11,7 @@ import { ApiOperation } from '@nestjs/swagger';
 import {
   LoginUserDto,
   RegisterUserDto,
-} from '@/src/core/application/dto/request/user.dto';
+} from '@/src/core/application/dto/request/auth.dto';
 import { CoreApiResponse } from '@/src/presentation/api/core/core-api.response';
 import { GoogleOauthGuard } from '@/src/presentation/guards/google-Oauth.guard';
 import type { Request, Response } from 'express';

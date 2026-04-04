@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { IBcryptService } from '../../ports/out/services/bcrypt.abstract';
 import { IJwtService } from '../../ports/out/services/jwt.abstract';
-import { UserRoleEnum } from '@/src/core/domain/enums/user.enum';
 import { Response } from 'express';
 
 @Injectable()
@@ -18,7 +17,7 @@ export class AuthUseCaseHelper {
     return await this.bcryptService.compare(plainPassword, hashedPassword);
   }
 
-  async generateAccessAndRefreshTokens(sub: number, role: UserRoleEnum) {
+  async generateAccessAndRefreshTokens(sub: number, role: string) {
     const tokenPayload = {
       sub: sub,
       role: role,

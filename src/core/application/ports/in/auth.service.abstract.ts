@@ -3,7 +3,7 @@ import {
   LoginUserDto,
   RegisterOauthUserDto,
   RegisterUserDto,
-} from '../../dto/request/user.dto';
+} from '../../dto/request/auth.dto';
 import { Response } from 'express';
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 

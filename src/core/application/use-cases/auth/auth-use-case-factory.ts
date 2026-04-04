@@ -3,7 +3,7 @@ import { UserModel } from '@/src/core/domain/model/user.model';
 import {
   RegisterOauthUserDto,
   RegisterUserDto,
-} from '../../dto/request/user.dto';
+} from '../../dto/request/auth.dto';
 
 @Injectable()
 export class AuthUseCaseFactory {

@@ -1,9 +1,8 @@
 import { TokenType } from '@/src/shared/type/token-type';
-import { UserRoleEnum } from '@/src/core/domain/enums/user.enum';
 
 export interface IJwtPayload {
   sub: number;
-  role: UserRoleEnum;
+  role: string;
   iat?: number;
   exp?: number;
 }

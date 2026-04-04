@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { IGoogleStrategy } from '@/src/core/application/ports/out/services/google-strategy.abstract';
 import { Strategy, VerifyCallback } from 'passport-google-oauth2';
 import { PassportStrategy } from '@nestjs/passport';
-import { RegisterOauthUserDto } from '@/src/core/application/dto/request/user.dto';
+import { RegisterOauthUserDto } from '@/src/core/application/dto/request/auth.dto';
 import { AuthUseCaseService } from '@/src/core/application/use-cases/auth/auth-use-case.service';
 
 @Injectable()
