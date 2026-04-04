@@ -8,9 +8,9 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-export default tseslint.config(
+export default tseslint(
   {
-    ignores: ['eslint.config.mjs'],
+    ignores: ['eslint.config.js'],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
@@ -41,7 +41,7 @@ export default tseslint.config(
     languageOptions: {
       parserOptions: {
         projectService: {
-          allowDefaultProject: ['commitlint.config.js', 'eslint.config.mjs'],
+          allowDefaultProject: ['commitlint.config.js', 'eslint.config.js'],
         },
         tsconfigRootDir: __dirname,
       },
