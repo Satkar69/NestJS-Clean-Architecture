@@ -7,7 +7,7 @@ import {
   RegisterOauthUserDto,
   RegisterUserDto,
 } from '../../dto/request/user.dto';
-import { IUserUseCaseService } from '../../ports/in/user-use-case-service.abstract';
+import { IAuthService } from '../../ports/in/auth.service.abstract';
 import { Response } from 'express';
 import { AppException } from '@/src/shared/exceptions';
 import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
@@ -16,7 +16,7 @@ import { UserUseCaseHelper } from '../user/user-use-case.helper';
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 
 @Injectable()
-export class AuthUseCaseService implements IUserUseCaseService {
+export class AuthUseCaseService implements IAuthService {
   constructor(
     private dataServices: IDataServices,
     private authFactory: AuthUseCaseFactory,

@@ -7,7 +7,7 @@ import {
 import { Response } from 'express';
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 
-export abstract class IUserUseCaseService {
+export abstract class IAuthService {
   abstract registerUser(dto: RegisterUserDto): Promise<UserModel>;
   abstract loginUser(dto: LoginUserDto, res: Response): Promise<void>;
   abstract loginGoogleUser(userEmail: string, res: Response): Promise<void>;
