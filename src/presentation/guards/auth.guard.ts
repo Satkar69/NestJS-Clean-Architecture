@@ -89,7 +89,8 @@ export class AuthGuard implements CanActivate {
         throw new AppException(
           StatusCodeEnum.UNAUTHORIZED,
           'Session has expired or is invalid',
-          { error: error instanceof Error ? error.message : String(error) },
+          undefined,
+          { service: 'AuthGuard', operation: 'authenticateUser' },
         );
       }
     }

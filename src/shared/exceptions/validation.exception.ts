@@ -1,5 +1,5 @@
 import { BaseException } from './base.exception';
-import { ValidationErrorInterface } from '../interface/validation-error.interface';
+import { ValidationErrorInterface } from '../interface/error.interface';
 
 /**
  * Validation Exception

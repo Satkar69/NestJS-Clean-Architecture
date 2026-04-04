@@ -4,7 +4,7 @@ import {
   ValidationError as ClassValidatorError,
 } from 'class-validator';
 import { plainToClass } from 'class-transformer';
-import { ValidationErrorInterface } from '@/src/shared/interface/validation-error.interface';
+import { ValidationErrorInterface } from '@/src/shared/interface/error.interface';
 import { ValidationException } from '@/src/shared/exceptions';
 @Injectable()
 export class ValidationPipe implements PipeTransform<any> {

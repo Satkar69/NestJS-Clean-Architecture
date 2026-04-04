@@ -26,7 +26,11 @@ export const pgDatabaseProvider = [
         throw new AppException(
           StatusCodeEnum.INTERNAL_SERVER_ERROR,
           'Failed to initialize database connection',
-          { error: error instanceof Error ? error.message : String(error) },
+          undefined,
+          {
+            service: 'PgDatabaseProvider',
+            operation: 'dataSource.initialize',
+          },
         );
       }
     },

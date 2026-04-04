@@ -15,4 +15,11 @@ export class HttpException extends BaseException {
     super(message, context);
     this.statusCode = statusCode;
   }
+
+  override toJSON() {
+    return {
+      ...super.toJSON(),
+      statusCode: this.statusCode,
+    };
+  }
 }

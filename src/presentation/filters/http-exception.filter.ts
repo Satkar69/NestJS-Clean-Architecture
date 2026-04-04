@@ -2,7 +2,6 @@ import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
-  HttpException,
   HttpStatus,
   Logger,
 } from '@nestjs/common';
@@ -10,167 +9,178 @@ import { Request, Response } from 'express';
 import {
   AppException,
   BaseException,
+  HttpException,
   ValidationException,
 } from '../../shared/exceptions';
+import {
+  AppErrorResponse,
+  BaseErrorResponse,
+  ValidationErrorResponse,
+} from '@/src/shared/interface/error.interface';
+
+type ErrorResponse =
+  | AppErrorResponse
+  | ValidationErrorResponse
+  | BaseErrorResponse;
+
+interface RequestMeta {
+  timestamp: string;
+  path: string;
+  method: string;
+}
+
+// ----------------------------------------------------------------
+// Filter
+// ----------------------------------------------------------------
+
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
-  private readonly isDevelopment = process.env.NODE_ENV !== 'production';
+  private readonly isDev = process.env.NODE_ENV !== 'production';
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost): void {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
     const errorResponse = this.buildErrorResponse(exception, request);
-    this.logError(exception, request, errorResponse.statusCode);
+
+    if (!this.shouldIgnoreRequest(request.url, errorResponse.statusCode)) {
+      this.logError(exception, request, errorResponse.statusCode);
+    }
+
     response.status(errorResponse.statusCode).json(errorResponse);
   }
 
-  private buildErrorResponse(exception: unknown, request: Request): any {
-    const timestamp = new Date().toISOString();
-    const path = request.url;
-    const method = request.method;
+  // ----------------------------------------------------------------
+  // Response builders
+  // ----------------------------------------------------------------
 
-    // Handle AppException (generic application exception)
+  private buildErrorResponse(
+    exception: unknown,
+    request: Request,
+  ): ErrorResponse {
+    const meta = this.buildMeta(request);
+
     if (exception instanceof AppException) {
-      return this.handleAppException(exception, timestamp, path, method);
+      return this.handleAppException(exception, meta);
     }
 
-    // Handle NestJS built-in HttpException
+    if (exception instanceof ValidationException) {
+      return this.handleValidationException(exception, meta);
+    }
+
     if (exception instanceof HttpException) {
-      return this.handleHttpException(exception, timestamp, path, method);
+      return this.handleHttpException(exception, meta);
     }
 
-    // Handle other custom BaseExceptions (e.g. ValidationException)
     if (exception instanceof BaseException) {
-      return this.handleBaseException(exception, timestamp, path, method);
+      return this.handleBaseException(exception, meta);
     }
 
-    // Handle unknown errors
-    return this.handleUnknownError(exception, timestamp, path, method);
+    return this.handleUnknownError(exception, meta);
   }
 
   private handleAppException(
     exception: AppException,
-    timestamp: string,
-    path: string,
-    method: string,
-  ): any {
-    const baseResponse = {
+    meta: RequestMeta,
+  ): AppErrorResponse {
+    const base: AppErrorResponse = {
+      ...meta,
       statusCode: exception.statusCode,
-      timestamp,
-      path,
-      method,
       error: exception.name,
       message: exception.message,
-      ...(exception.errors && { errors: exception.errors }),
+      ...(exception.errors !== undefined && { errors: exception.errors }),
     };
 
-    if (this.isDevelopment) {
-      return {
-        ...baseResponse,
-        context: exception.context,
-        stack: exception.stack,
-      };
-    }
+    return this.withDevDetails(base, exception);
+  }
 
-    return baseResponse;
+  private handleValidationException(
+    exception: ValidationException,
+    meta: RequestMeta,
+  ): ValidationErrorResponse {
+    const base: ValidationErrorResponse = {
+      ...meta,
+      statusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      error: exception.name,
+      message: exception.message,
+      errors: exception.errors,
+    };
+
+    return this.withDevDetails(base, exception);
   }
 
   private handleHttpException(
     exception: HttpException,
-    timestamp: string,
-    path: string,
-    method: string,
-  ): any {
-    const status = exception.getStatus();
-    const exceptionResponse = exception.getResponse();
-
-    const baseResponse = {
-      statusCode: status,
-      timestamp,
-      path,
-      method,
-      message:
-        typeof exceptionResponse === 'string'
-          ? exceptionResponse
-          : (exceptionResponse as any).message || 'Internal server error',
-    };
-
-    if (this.isDevelopment) {
-      return {
-        ...baseResponse,
-        error: exception.name,
-        details:
-          typeof exceptionResponse === 'object' ? exceptionResponse : null,
-        stack: exception.stack,
-      };
-    }
-
-    return baseResponse;
-  }
-
-  private handleBaseException(
-    exception: BaseException,
-    timestamp: string,
-    path: string,
-    method: string,
-  ): any {
-    const baseResponse = {
-      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      timestamp,
-      path,
-      method,
+    meta: RequestMeta,
+  ): BaseErrorResponse {
+    const base: BaseErrorResponse = {
+      ...meta,
+      statusCode: exception.statusCode,
       error: exception.name,
       message: exception.message,
     };
 
-    if (this.isDevelopment) {
-      return {
-        ...baseResponse,
-        context: exception.context,
-        stack: exception.stack,
-        ...(exception instanceof ValidationException && {
-          validationErrors: exception.errors,
-        }),
-      };
-    }
+    return this.withDevDetails(base, exception);
+  }
 
-    if (exception instanceof ValidationException) {
-      return { ...baseResponse, validationErrors: exception.errors };
-    }
+  private handleBaseException(
+    exception: BaseException,
+    meta: RequestMeta,
+  ): BaseErrorResponse {
+    const base: BaseErrorResponse = {
+      ...meta,
+      statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
+      error: exception.name,
+      message: exception.message,
+    };
 
-    return baseResponse;
+    return this.withDevDetails(base, exception);
   }
 
   private handleUnknownError(
     exception: unknown,
-    timestamp: string,
-    path: string,
-    method: string,
-  ): any {
-    const message =
-      exception instanceof Error
-        ? exception.message
-        : 'An unexpected error occurred';
-
-    const baseResponse = {
+    meta: RequestMeta,
+  ): BaseErrorResponse {
+    const base: BaseErrorResponse = {
+      ...meta,
       statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
-      timestamp,
-      path,
-      method,
       error: 'InternalServerError',
-      message: this.isDevelopment
-        ? message
-        : 'Internal server error. Please try again later.',
+      message:
+        this.isDev && exception instanceof Error
+          ? exception.message
+          : 'Internal server error. Please try again later.',
     };
 
-    if (this.isDevelopment && exception instanceof Error) {
-      return { ...baseResponse, stack: exception.stack, details: exception };
-    }
+    return this.isDev && exception instanceof Error
+      ? { ...base, stack: exception.stack }
+      : base;
+  }
 
-    return baseResponse;
+  // ----------------------------------------------------------------
+  // Helpers
+  // ----------------------------------------------------------------
+
+  private buildMeta(request: Request): RequestMeta {
+    return {
+      timestamp: new Date().toISOString(),
+      path: request.url,
+      method: request.method,
+    };
+  }
+
+  private withDevDetails<T extends BaseErrorResponse>(
+    base: T,
+    exception: BaseException,
+  ): T {
+    if (!this.isDev) return base;
+
+    return {
+      ...base,
+      stack: exception.stack,
+      ...(exception.context && { context: exception.context }),
+    };
   }
 
   private shouldIgnoreRequest(url: string, statusCode: number): boolean {
@@ -192,40 +202,49 @@ export class HttpExceptionFilter implements ExceptionFilter {
     return ignorePatterns.some((pattern) => url.includes(pattern));
   }
 
-  private logError(exception: unknown, request: Request, statusCode: number) {
+  // ----------------------------------------------------------------
+  // Logging
+  // ----------------------------------------------------------------
+
+  private logError(
+    exception: unknown,
+    request: Request,
+    statusCode: number,
+  ): void {
     const { method, url, ip, headers } = request;
-    const userAgent = headers['user-agent'] || 'Unknown';
-
-    if (this.shouldIgnoreRequest(url, statusCode)) return;
-
-    const logContext = { method, url, ip, userAgent, statusCode };
+    const userAgent = headers['user-agent'] ?? 'Unknown';
     const errorName =
       exception instanceof Error ? exception.name : 'UnknownError';
     const errorMessage =
       exception instanceof Error ? exception.message : String(exception);
+    const logContext = { method, url, ip, userAgent, statusCode };
 
     if (statusCode >= 500) {
       this.logger.error(
         `[${errorName}] ${method} ${url} - ${statusCode}\nMessage: ${errorMessage}\nContext: ${JSON.stringify(logContext, null, 2)}`,
         exception instanceof Error ? exception.stack : undefined,
       );
-    } else if (statusCode >= 400) {
+      return;
+    }
+
+    if (statusCode >= 400) {
       this.logger.warn(
-        `[${errorName}] ${method} ${url} - ${statusCode}\nMessage: ${errorMessage}\nContext: ${JSON.stringify(logContext, null, 2)}`,
+        `[${errorName}] ${method} ${url} - ${statusCode}\nMessage: ${errorMessage}`,
       );
 
-      if (this.isDevelopment && exception instanceof Error && exception.stack) {
-        this.logger.warn(`Stack Trace:\n${exception.stack}`);
+      if (this.isDev && exception instanceof Error) {
+        this.logger.debug(`Stack:\n${exception.stack}`);
       }
     }
 
-    if (this.isDevelopment && exception instanceof BaseException) {
+    if (this.isDev && exception instanceof BaseException) {
       if (exception.context) {
         this.logger.debug(
           `Exception Context: ${JSON.stringify(exception.context, null, 2)}`,
         );
       }
-      if (exception instanceof ValidationException && exception.errors) {
+
+      if (exception instanceof ValidationException) {
         this.logger.debug(
           `Validation Errors: ${JSON.stringify(exception.errors, null, 2)}`,
         );
