@@ -4,6 +4,7 @@ import { AppClsStore } from '@/src/shared/interface/cls-store/app-cls-store.inte
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
 import { CoreApiResponse } from '../../api/core/core-api.response';
 import { ApiOperation } from '@nestjs/swagger';
+import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 
 @Controller()
 export class UserController {
@@ -11,7 +12,11 @@ export class UserController {
 
   @ApiOperation({ summary: 'Get current logged in user' })
   @Get('/me')
-  async me() {
-    return CoreApiResponse.success(this.cls.get<UserClsStore>('user'));
+  me() {
+    return CoreApiResponse.success(
+      this.cls.get<UserClsStore>('user'),
+      StatusCodeEnum.OK,
+      'Logged in user retrieved successfully',
+    );
   }
 }
