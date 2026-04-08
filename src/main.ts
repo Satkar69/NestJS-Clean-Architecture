@@ -13,7 +13,6 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
-  // -- Cors setup
   app.enableCors({
     origin: ['*'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
@@ -26,7 +25,7 @@ async function bootstrap() {
     .setTitle('API Documentation')
     .setDescription('The API description')
     .setVersion('1.0')
-    .addTag('api')
+    .addTag('Original Starter API')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -37,4 +36,5 @@ async function bootstrap() {
   await app.listen(process.env.PORT ?? 3000);
   Logger.log(`Server is running on port: ${process.env.PORT}`);
 }
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

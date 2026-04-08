@@ -11,7 +11,7 @@ export class ValidationException extends BaseException {
   constructor(
     errors: ValidationErrorInterface[],
     message?: string,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
   ) {
     super(message || 'Validation failed', { errors, ...context });
     this.errors = errors;

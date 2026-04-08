@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { IGoogleStrategy } from '@/src/core/application/ports/out/services/google-strategy.abstract';
-import { Strategy, VerifyCallback } from 'passport-google-oauth2';
+import { Strategy, VerifyCallback, Profile } from 'passport-google-oauth20';
 import { PassportStrategy } from '@nestjs/passport';
 import { RegisterOauthUserDto } from '@/src/core/application/dto/request/auth.dto';
 import { AuthUseCaseService } from '@/src/core/application/use-cases/auth/auth-use-case.service';
@@ -26,7 +26,7 @@ export class GoogleStrategyService
   async validate(
     _accessToken: string,
     _refreshToken: string,
-    profile: any,
+    profile: Profile,
     done: VerifyCallback,
   ): Promise<any> {
     const { id, name, emails } = profile;
@@ -34,9 +34,9 @@ export class GoogleStrategyService
     const user: RegisterOauthUserDto = {
       oauthProvider: 'google',
       oauthProviderId: id,
-      firstName: name.givenName,
-      lastName: name.familyName,
-      email: emails[0].value,
+      firstName: name!.givenName,
+      lastName: name!.familyName,
+      email: emails![0].value,
     };
 
     const userData = await this.authService.validateOauthUser(user);

@@ -1,10 +1,10 @@
 import { IResponseResult } from './response-result.interface';
 
 export class AppResponse<ResponseModel> {
-  public statusCode: number;
-  public message: string;
-  public data: ResponseModel;
-  public timeStamp: Date;
+  public readonly statusCode: number;
+  public readonly message: string;
+  public readonly data?: ResponseModel;
+  public readonly timeStamp: Date;
 
   constructor(responseResult: IResponseResult<ResponseModel>) {
     this.statusCode = responseResult.statusCode;
