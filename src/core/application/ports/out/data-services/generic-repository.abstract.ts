@@ -2,7 +2,7 @@ import { IPaginationData } from '@/src/shared/interface/response/pagination-data
 import { RelationType } from '@/src/shared/type/relation-type';
 
 export type keyValueObj = {
-  [key: string]: any;
+  [key: string]: unknown;
 };
 
 export type OtherMethodOptions = {
@@ -71,7 +71,7 @@ export abstract class IGenericRepository<T> {
 
   abstract updateBulk(
     condition: keyValueObj | any[],
-    item: keyValueObj,
+    item: T,
     manager?: unknown,
   ): Promise<T[]>;
 

@@ -93,7 +93,7 @@ export class PgGenericRepository<
     });
     if (!item) {
       const entityName = this._repository.metadata.targetName.replace(
-        '/Entity$/',
+        /Entity$/,
         '',
       );
       throw new AppException(
