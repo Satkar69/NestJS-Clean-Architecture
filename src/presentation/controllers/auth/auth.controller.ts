@@ -7,7 +7,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
   LoginUserDto,
   RegisterUserDto,
@@ -17,11 +17,21 @@ import { GoogleOauthGuard } from '@/src/presentation/guards/google-Oauth.guard';
 import type { Request, Response } from 'express';
 import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 import { AuthUseCaseService } from '@/src/core/application/use-cases/auth/auth-use-case.service';
+import { CoreApiResponseDto } from '@/src/core/application/dto/response/core/core-api-response.dto';
+import { RegisterUserResponseDto } from '@/src/core/application/dto/response/auth.dto';
 @Controller()
 export class AuthController {
   constructor(private authService: AuthUseCaseService) {}
 
   @ApiOperation({ summary: 'Register a new user' })
+  @ApiResponse({
+    status: StatusCodeEnum.CREATED,
+    type: CoreApiResponseDto(
+      RegisterUserResponseDto,
+      StatusCodeEnum.CREATED,
+      'user registered successfully',
+    ),
+  })
   @Post('/register')
   async registerUser(@Body() dto: RegisterUserDto) {
     return CoreApiResponse.success(

@@ -14,6 +14,7 @@ import { StatusCodeEnum } from '@/src/shared/enums/status-code.enum';
 import { AuthUseCaseHelper } from './auth-use-case.helper';
 import { UserUseCaseHelper } from '../user/user-use-case.helper';
 import { UserClsStore } from '@/src/shared/interface/cls-store/user-cls.interface';
+import { UserModel } from '@/src/core/domain/model/user.model';
 
 @Injectable()
 export class AuthUseCaseService implements IAuthService {
@@ -25,7 +26,7 @@ export class AuthUseCaseService implements IAuthService {
     private authUseCaseHelper: AuthUseCaseHelper,
   ) {}
 
-  async registerUser(dto: RegisterUserDto) {
+  async registerUser(dto: RegisterUserDto): Promise<UserModel> {
     const existingUser = await this.userUseCaseHelper.checkExistingUserByEmail(
       dto.email,
     );
@@ -40,7 +41,7 @@ export class AuthUseCaseService implements IAuthService {
       ...dto,
       password: hashedPassword,
     });
-    return this.dataServices.user.create(user);
+    return await this.dataServices.user.create(user);
   }
 
   async loginUser(dto: LoginUserDto, res: Response) {
