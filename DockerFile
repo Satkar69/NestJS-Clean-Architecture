@@ -7,15 +7,9 @@ WORKDIR /app
 COPY package*.json /app
 # install dependencies
 
-RUN npm install -g npm@11.4.2
+RUN npm ci
 
-RUN npm install --legacy-peer-deps 
-
-#  Copy 
-COPY . /app
-COPY .env /app/.env
-# install nest js silent
-RUN npm install -g @nestjs/cli --silent
+COPY . .
 
 # build
 RUN npm run build
