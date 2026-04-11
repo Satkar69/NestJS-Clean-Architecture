@@ -57,7 +57,13 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     await this.authService.loginGoogleUser(req.user!.email, res);
-    return res.redirect('http://localhost:5000/api/v1/user/me');
+    return res.send(`
+    <html>
+      <body>
+        <p>Login successful!</p>
+      </body>
+    </html>
+  `);
   }
 
   @ApiOperation({ summary: 'Logout a user' })
