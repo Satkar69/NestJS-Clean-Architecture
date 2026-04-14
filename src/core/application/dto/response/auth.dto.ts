@@ -10,7 +10,7 @@ export class RegisterUserResponseDto {
   @ApiProperty({
     example: 'William',
   })
-  middleName?: string;
+  middleName: string;
 
   @ApiProperty({
     example: 'Doe',
