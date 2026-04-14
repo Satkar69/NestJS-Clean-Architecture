@@ -7,6 +7,11 @@ export function CoreApiResponseDto<TData>(
   message: string,
   isArray = false,
 ) {
+  const messageSlug = message
+    .replace(/\s+/g, '_')
+    .replace(/[^a-zA-Z0-9_]/g, '');
+  const className = `CoreApiResponse_${DataDto?.name ?? 'Empty'}_${statusCode}_${messageSlug}`;
+
   class CoreApiResponseClass {
     @ApiProperty({ example: statusCode })
     statusCode: number;
@@ -14,11 +19,18 @@ export function CoreApiResponseDto<TData>(
     @ApiProperty({ example: message })
     message: string;
 
-    @ApiProperty({ type: DataDto ?? Object, isArray })
-    data: TData | TData[];
-
     @ApiProperty({ example: '2026-04-11T14:26:47.078Z' })
     timestamp: string;
   }
+
+  if (DataDto) {
+    ApiProperty({ type: DataDto, isArray })(
+      CoreApiResponseClass.prototype,
+      'data',
+    );
+  }
+
+  Object.defineProperty(CoreApiResponseClass, 'name', { value: className });
+
   return CoreApiResponseClass;
 }
