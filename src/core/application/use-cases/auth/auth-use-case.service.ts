@@ -22,12 +22,12 @@ export class AuthUseCaseService implements IAuthService {
     private dataServices: IDataServices,
     private authFactory: AuthUseCaseFactory,
     private bcryptService: IBcryptService,
-    private userUseCaseHelper: UserUseCaseHelper,
-    private authUseCaseHelper: AuthUseCaseHelper,
+    private userHelper: UserUseCaseHelper,
+    private authHelper: AuthUseCaseHelper,
   ) {}
 
   async registerUser(dto: RegisterUserDto): Promise<UserModel> {
-    const existingUser = await this.userUseCaseHelper.checkExistingUserByEmail(
+    const existingUser = await this.userHelper.checkExistingUserByEmail(
       dto.email,
     );
     if (existingUser.exists) {
@@ -45,7 +45,7 @@ export class AuthUseCaseService implements IAuthService {
   }
 
   async loginUser(dto: LoginUserDto, res: Response) {
-    const existingUser = await this.userUseCaseHelper.checkExistingUserByEmail(
+    const existingUser = await this.userHelper.checkExistingUserByEmail(
       dto.email,
     );
 
@@ -55,7 +55,7 @@ export class AuthUseCaseService implements IAuthService {
         `user with email '${dto.email}' does not exists.`,
       );
     }
-    const isPasswordValid = await this.authUseCaseHelper.checkPasswordMatch(
+    const isPasswordValid = await this.authHelper.checkPasswordMatch(
       dto.password,
       existingUser.user.password ?? '',
     );
@@ -66,12 +66,12 @@ export class AuthUseCaseService implements IAuthService {
         'Invalid credentials provided',
       );
     }
-    const tokens = await this.authUseCaseHelper.generateAccessAndRefreshTokens(
+    const tokens = await this.authHelper.generateAccessAndRefreshTokens(
       existingUser.user.id,
       existingUser.user.userRole,
     );
 
-    this.authUseCaseHelper.setTokensInResponseCookies(
+    this.authHelper.setTokensInResponseCookies(
       tokens.accessToken,
       tokens.refreshToken,
       res,
@@ -80,19 +80,19 @@ export class AuthUseCaseService implements IAuthService {
 
   async loginGoogleUser(userEmail: string, res: Response) {
     const existingUser =
-      await this.userUseCaseHelper.checkExistingUserByEmail(userEmail);
+      await this.userHelper.checkExistingUserByEmail(userEmail);
     if (!existingUser.exists || !existingUser.user) {
       throw new AppException(
         StatusCodeEnum.NOT_FOUND,
         `user with email '${userEmail}' does not exists.`,
       );
     }
-    const tokens = await this.authUseCaseHelper.generateAccessAndRefreshTokens(
+    const tokens = await this.authHelper.generateAccessAndRefreshTokens(
       existingUser.user.id,
       existingUser.user.userRole,
     );
 
-    this.authUseCaseHelper.setTokensInResponseCookies(
+    this.authHelper.setTokensInResponseCookies(
       tokens.accessToken,
       tokens.refreshToken,
       res,
@@ -106,7 +106,7 @@ export class AuthUseCaseService implements IAuthService {
         'Invalid User Data, Unauthenticated',
       );
     }
-    const existingUser = await this.userUseCaseHelper.checkExistingUserByEmail(
+    const existingUser = await this.userHelper.checkExistingUserByEmail(
       dto.email,
     );
     if (!existingUser.exists) {
