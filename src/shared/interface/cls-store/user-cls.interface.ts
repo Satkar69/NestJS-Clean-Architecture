@@ -7,4 +7,5 @@ export interface UserClsStore {
   lastName: string;
   email: string;
   userRole: UserRoleEnum;
+  isActive: boolean;
 }

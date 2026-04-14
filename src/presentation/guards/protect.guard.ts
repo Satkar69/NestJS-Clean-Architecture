@@ -42,6 +42,7 @@ export class ProtectGuard implements CanActivate {
       lastName: user.lastName,
       email: user.email,
       userRole: user.userRole,
+      isActive: user.isActive,
     });
   }
 

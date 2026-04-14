@@ -122,6 +122,7 @@ export class AuthUseCaseService implements IAuthService {
       lastName: existingUser.user!.lastName,
       email: existingUser.user!.email,
       userRole: existingUser.user!.userRole,
+      isActive: existingUser.user!.isActive,
     };
   }
 
