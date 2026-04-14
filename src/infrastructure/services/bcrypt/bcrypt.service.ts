@@ -7,10 +7,10 @@ export class BcryptService implements IBcryptService {
   saltsRounds = 10;
 
   async hash(hashString: string): Promise<string> {
-    return bcrypt.hash(hashString, this.saltsRounds);
+    return await bcrypt.hash(hashString, this.saltsRounds);
   }
 
   async compare(hashString: string, hashedString: string): Promise<boolean> {
-    return bcrypt.compare(hashString, hashedString);
+    return await bcrypt.compare(hashString, hashedString);
   }
 }

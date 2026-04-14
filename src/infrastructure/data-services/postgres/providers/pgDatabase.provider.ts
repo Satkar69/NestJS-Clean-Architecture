@@ -17,7 +17,7 @@ export const pgDatabaseProvider = [
           'PgDatabaseProvider',
         );
         return dataSource;
-      } catch (error: Error | any) {
+      } catch (error) {
         Logger.error(
           'Error during Data Source initialization',
           'PgDatabaseProvider',
