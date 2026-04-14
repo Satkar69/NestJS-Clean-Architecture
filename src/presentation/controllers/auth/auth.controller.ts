@@ -42,6 +42,14 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Login a user' })
+  @ApiResponse({
+    status: StatusCodeEnum.OK,
+    type: CoreApiResponseDto(
+      null,
+      StatusCodeEnum.OK,
+      'user logged in successfully',
+    ),
+  })
   @Post('/login')
   async loginUser(
     @Body() dto: LoginUserDto,
@@ -77,6 +85,14 @@ export class AuthController {
   }
 
   @ApiOperation({ summary: 'Logout a user' })
+  @ApiResponse({
+    status: StatusCodeEnum.OK,
+    type: CoreApiResponseDto(
+      null,
+      StatusCodeEnum.OK,
+      'user logged out successfully',
+    ),
+  })
   @Post('/logout')
   logoutUser(@Res({ passthrough: true }) res: Response) {
     return CoreApiResponse.success(
