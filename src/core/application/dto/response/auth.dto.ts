@@ -8,9 +8,9 @@ export class RegisterUserResponseDto {
   firstName: string;
 
   @ApiProperty({
-    example: 'William',
+    example: 'William | null | undefined',
   })
-  middleName: string;
+  middleName?: string;
 
   @ApiProperty({
     example: 'Doe',
@@ -21,6 +21,21 @@ export class RegisterUserResponseDto {
     example: 'john.doe@example.com',
   })
   email: string;
+
+  @ApiProperty({
+    example: false,
+  })
+  isOauthUser: boolean;
+
+  @ApiProperty({
+    example: 'GOOGLE | null | undefined',
+  })
+  oauthProvider?: string;
+
+  @ApiProperty({
+    example: 'aoi3240813h10394 | null | undefined',
+  })
+  oauthProviderId?: string;
 
   @ApiProperty({
     example: 'USER',
