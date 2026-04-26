@@ -34,3 +34,58 @@ export function CoreApiResponseDto<TData>(
 
   return CoreApiResponseClass;
 }
+
+export function CoreApiPaginationResponseDto<TData>(
+  DataDto: Type<TData>,
+  statusCode: number,
+  message: string,
+) {
+  const messageSlug = message
+    .replace(/\s+/g, '_')
+    .replace(/[^a-zA-Z0-9_]/g, '');
+  const className = `CoreApiPaginationResponse_${DataDto.name}_${statusCode}_${messageSlug}`;
+
+  class PaginationMetaClass {
+    @ApiProperty({ example: 10 })
+    limit: number;
+
+    @ApiProperty({ example: 5 })
+    pageTotal: number;
+
+    @ApiProperty({ example: 10 })
+    totalPages: number;
+
+    @ApiProperty({ example: 1 })
+    page: number;
+
+    @ApiProperty({ example: 2, nullable: true })
+    next: number | null;
+
+    @ApiProperty({ example: null, nullable: true })
+    previous: number | null;
+  }
+
+  class CoreApiPaginationResponseClass {
+    @ApiProperty({ example: statusCode })
+    statusCode: number;
+
+    @ApiProperty({ example: message })
+    message: string;
+
+    @ApiProperty({ type: DataDto, isArray: true })
+    data: TData[];
+
+    @ApiProperty({ type: PaginationMetaClass })
+    meta: PaginationMetaClass;
+  }
+
+  Object.defineProperty(PaginationMetaClass, 'name', {
+    value: `${className}_Meta`,
+  });
+
+  Object.defineProperty(CoreApiPaginationResponseClass, 'name', {
+    value: className,
+  });
+
+  return CoreApiPaginationResponseClass;
+}
